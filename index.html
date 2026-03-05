@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My site</title>
+	<link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+<h1>My SSSSite</h1>
+<a href="snake.html" style="font-weight: bold; font-size: 18px;">Snake</a>&emsp;
+<a href="snake3d.html" style="font-weight: bold; font-size: 18px;">Snake 3D</a>
+<br><br>
+<h2>Add Contact</h2>
+  <?= $message ?>
+  <form method="POST">
+    <label>First Name</label>
+    <input type="text" name="first_name" required>
+
+    <label>Last Name</label>
+    <input type="text" name="last_name" required>
+
+    <label>Phone</label>
+    <input type="tel" name="phone" required>
+
+    <button type="submit">Save Contact</button>
+  </form>
+</body>
+</html>
