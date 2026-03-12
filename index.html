@@ -3,6 +3,47 @@
 <head>
     <title>My site</title>
 	<link rel="icon" type="image/png" href="favicon.png">
+	
+	 <style>
+        /* Simple notepad styles - non-invasive, only targets new elements */
+        .notepad-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            max-width: 500px;
+        }
+        .notepad-section textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        .notepad-section button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .notepad-section button:hover {
+            background-color: #45a049;
+        }
+        .last-saved {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+    </style>
 </head>
 
 <body>
@@ -24,6 +65,17 @@
     <button type="submit">Save Contact</button>
   </form>
   
+  <br><br>
+  
+  <!-- Simple Notepad Section -->
+<div class="notepad-section">
+    <h2>Notepad</h2>
+    <textarea id="notepad" placeholder="Write your notes here... They will be saved automatically!"></textarea>
+    <button onclick="saveNote()">Save Note</button>
+    <button onclick="clearNote()">Clear</button>
+    <div class="last-saved" id="lastSaved"></div>
+</div>
+  
   <script>
   const params = new URLSearchParams(window.location.search);
   const status = params.get('status');
@@ -41,6 +93,72 @@
   }
 
   if (status) document.querySelector('form').after(msg);
+  
+  // New notepad functionality
+  // Load saved note when page loads
+  window.onload = function() {
+      loadNote();
+      // Optional: Auto-save every 30 seconds
+      //setInterval(autoSave, 30000);
+  };
+
+  // Save note to server
+  function saveNote() {
+      const note = document.getElementById('notepad').value;
+      fetch('save_note.php', { method: 'POST', body: new URLSearchParams({ note }) })
+          .then(() => { updateLastSavedTime(); showTemporaryMessage('Note saved!', 'green'); })
+          .catch(() => showTemporaryMessage('Save failed.', 'red'));
+  }
+
+  // Load note from server
+  function loadNote() {
+      fetch('load_note.php')
+          .then(r => r.text())
+          .then(text => { if (text) { document.getElementById('notepad').value = text;} })
+          .catch(() => {});
+  }
+
+  // Clear note
+  function clearNote() {
+      if (confirm('Clear all notes?')) {
+          document.getElementById('notepad').value = '';
+          fetch('save_note.php', { method: 'POST', body: new URLSearchParams({ note: '' }) });
+          document.getElementById('lastSaved').textContent = '';
+      }
+  }
+
+  // Auto-save function
+  function autoSave() {
+      const note = document.getElementById('notepad').value;
+      if (note) {
+          fetch('save_note.php', { method: 'POST', body: new URLSearchParams({ note }) })
+              .then(() => updateLastSavedTime())
+              .catch(() => {});
+      }
+  }
+
+  // Update last saved timestamp
+  function updateLastSavedTime() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString();
+      document.getElementById('lastSaved').textContent = 'Last saved: ' + timeString;
+  }
+
+  // Show temporary message
+  function showTemporaryMessage(text, color) {
+      const msg = document.createElement('div');
+      msg.textContent = text;
+      msg.style.color = color;
+      msg.style.fontSize = '12px';
+      msg.style.marginTop = '5px';
+      
+      const lastSaved = document.getElementById('lastSaved');
+      lastSaved.parentNode.insertBefore(msg, lastSaved);
+      
+      setTimeout(() => {
+          msg.remove();
+      }, 2000);
+  }
 </script>
 
 </body>
