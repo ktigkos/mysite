@@ -34,7 +34,7 @@
         #score {
             font-size: 24px;
             font-weight: bold;
-            <!-- color: #333; -->
+            /* color: #333; */
         }
         
         button {
@@ -273,6 +273,46 @@
                     break;
             }
         });
+
+        // Touch/swipe controls
+        let touchStartX = null;
+        let touchStartY = null;
+
+        document.addEventListener('touchstart', function(e) {
+            if (e.touches.length === 1) {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+            }
+        }, { passive: true });
+
+        document.addEventListener('touchmove', function(e) {
+            if (e.touches.length === 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        document.addEventListener('touchend', function(e) {
+            if (touchStartX === null || touchStartY === null || !gameActive) return;
+
+            const dx = e.changedTouches[0].clientX - touchStartX;
+            const dy = e.changedTouches[0].clientY - touchStartY;
+
+            // Require a minimum swipe distance to avoid accidental triggers
+            if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
+
+            if (Math.abs(dx) > Math.abs(dy)) {
+                // Horizontal swipe
+                if (dx > 0 && direction !== 'left') nextDirection = 'right';
+                else if (dx < 0 && direction !== 'right') nextDirection = 'left';
+            } else {
+                // Vertical swipe
+                if (dy > 0 && direction !== 'up') nextDirection = 'down';
+                else if (dy < 0 && direction !== 'down') nextDirection = 'up';
+            }
+
+            touchStartX = null;
+            touchStartY = null;
+        }, { passive: true });
 
         // Start game automatically when page loads
         window.onload = function() {
