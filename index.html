@@ -79,7 +79,7 @@
   <div class="notepad-section">
     <h2>Notepad</h2>
     <div class="ws-status connecting" id="wsStatus">⬤ Connecting...</div>
-    <textarea id="notepad" placeholder="Write your notes here... Changes sync in real-time across all devices!"></textarea>
+    <textarea id="notepad" placeholder="Write your notes here..."></textarea>
     <button onclick="clearNote()">Clear</button>
     <div class="last-saved" id="lastSaved"></div>
   </div>
@@ -140,11 +140,9 @@
         isRemoteUpdate = false;
       } else if (msg.type === 'update') {
         isRemoteUpdate = true;
-        const cursorStart = notepad.selectionStart;
-        const cursorEnd   = notepad.selectionEnd;
         notepad.value = msg.content;
-        notepad.setSelectionRange(cursorStart, cursorEnd);
         isRemoteUpdate = false;
+        notepad.scrollTop = notepad.scrollHeight;
         updateLastSavedTime('Synced from another device');
       }
     };
