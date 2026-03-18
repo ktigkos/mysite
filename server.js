@@ -1,6 +1,7 @@
 const http = require('http');
 const mysql = require('mysql2');
 const { URLSearchParams } = require('url');
+const WebSocket = require('ws');
 
 const PORT = 3000;
 
@@ -13,9 +14,36 @@ const db = mysql.createConnection({
 });
 
 db.connect((err) => {
-  if (err) console.error('DB connection failed:', err);
-  else console.log('Connected to MySQL');
+  if (err) console.error('Contacts DB connection failed:', err);
+  else console.log('Connected to contacts_db');
 });
+
+const noteDb = mysql.createConnection({
+  host: 'localhost',
+  port: 8889,
+  user: 'root',
+  password: 'root',
+  database: 'notepad',
+});
+
+noteDb.connect((err) => {
+  if (err) console.error('Notepad DB connection failed:', err);
+  else {
+    console.log('Connected to notepad DB');
+    noteDb.execute(`
+      CREATE TABLE IF NOT EXISTS note (
+        id INT PRIMARY KEY,
+        content TEXT NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      )
+    `, (err) => {
+      if (err) console.error('Failed to create note table:', err);
+      else console.log('Note table ready');
+    });
+  }
+});
+
+// ─── HTTP Server ───────────────────────────────────────────────────────────────
 
 const server = http.createServer((req, res) => {
   // Serve index.html
@@ -23,13 +51,13 @@ const server = http.createServer((req, res) => {
     const fs = require('fs');
     fs.readFile('index.html', (err, data) => {
       if (err) { res.writeHead(500); res.end('Error loading page'); return; }
-      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
       res.end(data);
     });
     return;
   }
 
-  // Handle contact form submission
+  // Handle contact form submission (unchanged)
   if (req.method === 'POST' && req.url === '/submit') {
     let body = '';
     req.on('data', chunk => body += chunk);
@@ -62,6 +90,15 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Load note via HTTP GET
+  if (req.method === 'GET' && req.url === '/note') {
+    noteDb.execute('SELECT content FROM note WHERE id = 1', (err, rows) => {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ content: (rows && rows[0]) ? rows[0].content : '' }));
+    });
+    return;
+  }
+
   // Serve static files (index.html, etc.)
   if (req.method === 'GET') {
     const fs = require('fs');
@@ -77,6 +114,55 @@ const server = http.createServer((req, res) => {
 
   res.writeHead(404);
   res.end('Not found');
+});
+
+// ─── WebSocket Server (real-time notepad) ──────────────────────────────────────
+
+const wss = new WebSocket.Server({ server });
+
+// Debounce MySQL saves so we don't write on every keystroke
+let saveTimer = null;
+function scheduleSave(content) {
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    noteDb.execute(
+      'INSERT INTO note (id, content) VALUES (1, ?) ON DUPLICATE KEY UPDATE content = ?, updated_at = CURRENT_TIMESTAMP',
+      [content, content],
+      (err) => { if (err) console.error('Note save error:', err); }
+    );
+  }, 500);
+}
+
+wss.on('connection', (ws) => {
+  console.log('WebSocket client connected');
+
+  // Send current note to the newly connected client
+  noteDb.execute('SELECT content FROM note WHERE id = 1', (err, rows) => {
+    const content = (rows && rows[0]) ? rows[0].content : '';
+    ws.send(JSON.stringify({ type: 'init', content }));
+  });
+
+  ws.on('message', (raw) => {
+    let msg;
+    try { msg = JSON.parse(raw); } catch { return; }
+
+    if (msg.type === 'update') {
+      const content = msg.content;
+
+      // Persist to MySQL (debounced)
+      scheduleSave(content);
+
+      // Broadcast to all OTHER connected clients for real-time sync
+      wss.clients.forEach((client) => {
+        if (client !== ws && client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify({ type: 'update', content }));
+        }
+      });
+    }
+  });
+
+  ws.on('close', () => console.log('WebSocket client disconnected'));
+  ws.on('error', (err) => console.error('WebSocket error:', err));
 });
 
 server.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));

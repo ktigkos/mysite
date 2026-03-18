@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
     <title>My site</title>
 	<link rel="icon" type="image/png" href="favicon.png">
 	
@@ -43,6 +44,13 @@
             margin-top: 5px;
             font-style: italic;
         }
+        .ws-status {
+            font-size: 11px;
+            margin-bottom: 6px;
+        }
+        .ws-status.connected { color: #4CAF50; }
+        .ws-status.disconnected { color: #e53935; }
+        .ws-status.connecting { color: #fb8c00; }
     </style>
 </head>
 
@@ -52,7 +60,7 @@
 <a href="snake3d.html" style="font-weight: bold; font-size: 18px;">Snake 3D</a>
 <br><br>
 <h2>Add Contact</h2>
-  <form method="POST" action="http://localhost:3000/submit">
+  <form method="POST" action="/submit">
     <label>First Name</label>
     <input type="text" name="first_name" required>
 
@@ -67,16 +75,17 @@
   
   <br><br>
   
-  <!-- Simple Notepad Section -->
-<div class="notepad-section">
+  <!-- Real-time Notepad Section -->
+  <div class="notepad-section">
     <h2>Notepad</h2>
-    <textarea id="notepad" placeholder="Write your notes here... They will be saved automatically!"></textarea>
-    <button onclick="saveNote()">Save Note</button>
+    <div class="ws-status connecting" id="wsStatus">⬤ Connecting...</div>
+    <textarea id="notepad" placeholder="Write your notes here..."></textarea>
     <button onclick="clearNote()">Clear</button>
     <div class="last-saved" id="lastSaved"></div>
-</div>
+  </div>
   
   <script>
+  // ─── Contact form status message (unchanged) ───────────────────────────────
   const params = new URLSearchParams(window.location.search);
   const status = params.get('status');
   const msg = document.createElement('p');
@@ -93,73 +102,79 @@
   }
 
   if (status) document.querySelector('form').after(msg);
-  
-  // New notepad functionality
-  // Load saved note when page loads
-  window.onload = function() {
-      loadNote();
-      // Optional: Auto-save every 30 seconds
-      //setInterval(autoSave, 30000);
-  };
 
-  // Save note to server
-  function saveNote() {
-      const note = document.getElementById('notepad').value;
-      fetch('save_note.php', { method: 'POST', body: new URLSearchParams({ note }) })
-          .then(() => { updateLastSavedTime(); showTemporaryMessage('Note saved!', 'green'); })
-          .catch(() => showTemporaryMessage('Save failed.', 'red'));
+  // ─── Real-time Notepad via WebSocket ──────────────────────────────────────
+  const notepad   = document.getElementById('notepad');
+  const wsStatus  = document.getElementById('wsStatus');
+  const lastSaved = document.getElementById('lastSaved');
+
+  let ws;
+  let isRemoteUpdate = false;
+
+  function connect() {
+    const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+    ws = new WebSocket(`${protocol}://${location.host}`);
+
+    ws.onopen = () => {
+      wsStatus.textContent = '⬤ Connected — syncing in real-time';
+      wsStatus.className = 'ws-status connected';
+    };
+
+    ws.onclose = () => {
+      wsStatus.textContent = '⬤ Disconnected — reconnecting...';
+      wsStatus.className = 'ws-status disconnected';
+      setTimeout(connect, 2000);
+    };
+
+    ws.onerror = () => {
+      wsStatus.textContent = '⬤ Connection error';
+      wsStatus.className = 'ws-status disconnected';
+    };
+
+    ws.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+
+      if (msg.type === 'init') {
+        isRemoteUpdate = true;
+        notepad.value = msg.content;
+        isRemoteUpdate = false;
+      } else if (msg.type === 'update') {
+        isRemoteUpdate = true;
+        notepad.value = msg.content;
+        isRemoteUpdate = false;
+        notepad.scrollTop = notepad.scrollHeight;
+        updateLastSavedTime('Synced from another device');
+      }
+    };
   }
 
-  // Load note from server
-  function loadNote() {
-      fetch('load_note.php')
-          .then(r => r.text())
-          .then(text => { if (text) { document.getElementById('notepad').value = text;} })
-          .catch(() => {});
-  }
+  notepad.addEventListener('input', () => {
+    if (isRemoteUpdate) return;
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ type: 'update', content: notepad.value }));
+      updateLastSavedTime('Saving...');
+      clearTimeout(notepad._saveLabel);
+      notepad._saveLabel = setTimeout(() => updateLastSavedTime('Saved'), 600);
+    }
+  });
 
-  // Clear note
   function clearNote() {
-      if (confirm('Clear all notes?')) {
-          document.getElementById('notepad').value = '';
-          fetch('save_note.php', { method: 'POST', body: new URLSearchParams({ note: '' }) });
-          document.getElementById('lastSaved').textContent = '';
+    if (confirm('Clear all notes?')) {
+      notepad.value = '';
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type: 'update', content: '' }));
       }
+      lastSaved.textContent = '';
+    }
   }
 
-  // Auto-save function
-  function autoSave() {
-      const note = document.getElementById('notepad').value;
-      if (note) {
-          fetch('save_note.php', { method: 'POST', body: new URLSearchParams({ note }) })
-              .then(() => updateLastSavedTime())
-              .catch(() => {});
-      }
+  function updateLastSavedTime(label) {
+    const now = new Date();
+    lastSaved.textContent = `${label} — ${now.toLocaleTimeString()}`;
   }
 
-  // Update last saved timestamp
-  function updateLastSavedTime() {
-      const now = new Date();
-      const timeString = now.toLocaleTimeString();
-      document.getElementById('lastSaved').textContent = 'Last saved: ' + timeString;
-  }
-
-  // Show temporary message
-  function showTemporaryMessage(text, color) {
-      const msg = document.createElement('div');
-      msg.textContent = text;
-      msg.style.color = color;
-      msg.style.fontSize = '12px';
-      msg.style.marginTop = '5px';
-      
-      const lastSaved = document.getElementById('lastSaved');
-      lastSaved.parentNode.insertBefore(msg, lastSaved);
-      
-      setTimeout(() => {
-          msg.remove();
-      }, 2000);
-  }
-</script>
+  connect();
+  </script>
 
 </body>
 </html>
