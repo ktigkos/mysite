@@ -1,0 +1,92 @@
+<section class="home">
+
+  <!-- Boot sequence terminal -->
+  <div class="boot-term" [class.done]="bootDone">
+    <div class="term-bar">
+      <span class="term-dot red"></span>
+      <span class="term-dot yellow"></span>
+      <span class="term-dot green"></span>
+      <span class="term-title">BOOT_SEQUENCE.SH</span>
+    </div>
+    <div class="term-body">
+      <p *ngFor="let line of bootLines" class="term-line">{{ line }}</p>
+      <span class="cursor" *ngIf="!bootDone">█</span>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero" [class.visible]="bootDone">
+    <div class="hero-eyebrow tag">// SYSTEM READY</div>
+    <h1 class="hero-title">
+      <span class="hero-pre">MY</span>
+      <span class="hero-accent glitch" data-text="SITE">.SITE</span>
+    </h1>
+    <p class="hero-sub">Personal control panel.<br>Games. Contacts. Notes.</p>
+  </div>
+
+  <!-- Cards grid -->
+  <div class="cards" [class.visible]="bootDone">
+
+    <!-- Snake -->
+    <a href="snake.html" class="card card-cyan">
+      <div class="card-num">01</div>
+      <div class="card-icon">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+          <path d="M6 30 L6 18 Q6 6 18 6 L30 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <circle cx="30" cy="6" r="3" fill="currentColor"/>
+          <circle cx="6" cy="30" r="2" fill="currentColor" opacity=".5"/>
+        </svg>
+      </div>
+      <div class="card-label">SNAKE</div>
+      <div class="card-desc">Classic 2D arcade. Eat. Grow. Die.</div>
+      <div class="card-arrow">↗</div>
+    </a>
+
+    <!-- Snake 3D -->
+    <a href="snake3d.html" class="card card-magenta">
+      <div class="card-num">02</div>
+      <div class="card-icon">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+          <path d="M6 30 L6 18 Q6 6 18 6 L30 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none" transform="rotate(-15 18 18)"/>
+          <path d="M6 30 L6 18 Q6 6 18 6 L30 6" stroke="currentColor" stroke-width="1" stroke-linecap="round" fill="none" opacity=".4" transform="rotate(15 18 18)"/>
+          <circle cx="30" cy="6" r="3" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="card-label">SNAKE_3D</div>
+      <div class="card-desc">Three dimensions. Same serpent.</div>
+      <div class="card-arrow">↗</div>
+    </a>
+
+    <!-- Contact -->
+    <a routerLink="/contact" class="card card-dim">
+      <div class="card-num">03</div>
+      <div class="card-icon">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+          <rect x="4" y="8" width="28" height="20" rx="2" stroke="currentColor" stroke-width="2"/>
+          <path d="M4 12 L18 21 L32 12" stroke="currentColor" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="card-label">CONTACTS</div>
+      <div class="card-desc">Add and manage contact records.</div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <!-- Notepad -->
+    <a routerLink="/notepad" class="card card-dim">
+      <div class="card-num">04</div>
+      <div class="card-icon">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+          <rect x="6" y="4" width="24" height="28" rx="2" stroke="currentColor" stroke-width="2"/>
+          <path d="M11 12 H25 M11 18 H25 M11 24 H19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="28" cy="28" r="4" fill="currentColor"/>
+          <path d="M26.5 28 H29.5 M28 26.5 V29.5" stroke="var(--bg)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card-label">NOTEPAD</div>
+      <div class="card-desc">Real-time synced notes. WebSocket.</div>
+      <div class="card-arrow">→</div>
+    </a>
+
+  </div>
+
+</section>

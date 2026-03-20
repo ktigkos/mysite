@@ -1,0 +1,47 @@
+<section class="notepad">
+
+  <div class="section-header">
+    <div class="tag">// MODULE_03</div>
+    <h2 class="section-title">NOTEPAD<span class="title-accent">_WS</span></h2>
+    <p class="section-sub">Real-time collaborative notes. All sessions sync via WebSocket.</p>
+  </div>
+
+  <div class="editor-wrap">
+
+    <div class="editor-bar">
+      <div class="editor-bar-left">
+        <span class="ws-indicator" [class]="statusClass">
+          <span class="ws-dot"></span>
+          <span class="ws-label">{{ statusLabel }}</span>
+        </span>
+      </div>
+      <div class="editor-bar-right">
+        <button class="btn-clear" (click)="clearNote()">CLEAR</button>
+      </div>
+    </div>
+
+    <div class="editor-body">
+      <div class="line-nums" aria-hidden="true">
+        <span *ngFor="let _ of [].constructor(lineCount); let i = index">{{ i + 1 }}</span>
+      </div>
+      <textarea
+        #textarea
+        class="editor-area"
+        (input)="onInput($event)"
+        placeholder="// Start typing. Notes sync in real-time across all open sessions.&#10;// Data persists to MySQL via WebSocket server."
+        spellcheck="false"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off">
+      </textarea>
+    </div>
+
+    <div class="editor-footer">
+      <span class="footer-info">CHARS: {{ charCount }}</span>
+      <span class="footer-info">LINES: {{ lineCount }}</span>
+      <span class="footer-saved">{{ lastSaved }}</span>
+    </div>
+
+  </div>
+
+</section>
