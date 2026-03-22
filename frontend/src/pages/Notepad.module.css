@@ -1,0 +1,130 @@
+.notepad {
+  padding: 36px 28px 60px;
+  animation: fadeUp .4s ease both;
+}
+
+.header { margin-bottom: 28px; }
+
+.tag {
+  font-family: var(--mono); font-size: .68rem;
+  letter-spacing: .2em; color: var(--cyan);
+  text-shadow: var(--text-glow-cyan); margin-bottom: 10px;
+}
+
+.title {
+  font-family: var(--display); font-size: 2.8rem; font-weight: 900;
+  letter-spacing: .04em; color: var(--white); margin-bottom: 8px;
+}
+.accent { color: var(--cyan); text-shadow: var(--text-glow-cyan); }
+
+.sub {
+  font-family: var(--body); font-size: .78rem;
+  color: var(--muted); letter-spacing: .06em;
+}
+
+/* ── Editor shell ────────────────────────────────────────── */
+.editor {
+  border: 1px solid var(--border2); border-radius: 3px;
+  background: var(--surface); overflow: hidden; position: relative;
+  &::after {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    opacity: .5;
+  }
+}
+
+/* ── Top bar ─────────────────────────────────────────────── */
+.editorBar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 16px; border-bottom: 1px solid var(--border);
+  background: rgba(0,0,0,.5);
+}
+
+.wsStatus {
+  display: flex; align-items: center; gap: 8px;
+}
+
+.wsDot {
+  width: 8px; height: 8px; border-radius: 50%;
+  transition: background .3s, box-shadow .3s;
+}
+.wsLabel {
+  font-family: var(--mono); font-size: .6rem;
+  letter-spacing: .12em; text-transform: uppercase;
+}
+
+.connected .wsDot    { background: var(--cyan);    box-shadow: 0 0 8px var(--cyan); }
+.connected .wsLabel  { color: var(--cyan); }
+.disconnected .wsDot { background: var(--magenta); box-shadow: 0 0 8px var(--magenta); }
+.disconnected .wsLabel { color: var(--magenta); }
+.connecting .wsDot   { background: var(--lime); animation: pulse 1s infinite; }
+.connecting .wsLabel { color: var(--lime); }
+
+.clearBtn {
+  font-family: var(--mono); font-size: .62rem; letter-spacing: .14em;
+  padding: 6px 14px; background: transparent;
+  border: 1px solid var(--border2); border-radius: 2px;
+  color: var(--muted); cursor: pointer; transition: all .2s;
+  &:hover {
+    border-color: var(--magenta); color: var(--magenta);
+    background: rgba(255,0,128,.06);
+  }
+}
+
+/* ── Editor body ─────────────────────────────────────────── */
+.editorBody {
+  display: flex; height: 420px;
+}
+
+.lineNums {
+  display: flex; flex-direction: column;
+  padding: 16px 0; min-width: 42px;
+  background: rgba(0,0,0,.35);
+  border-right: 1px solid var(--border);
+  text-align: right; user-select: none; overflow: hidden;
+
+  span {
+    font-family: var(--mono); font-size: .68rem;
+    line-height: 1.75rem; color: var(--muted);
+    padding: 0 10px; opacity: .45;
+  }
+}
+
+.textarea {
+  flex: 1; padding: 16px 18px;
+  font-family: var(--mono); font-size: .85rem; line-height: 1.75rem;
+  color: var(--white); background: transparent;
+  border: none; outline: none; resize: none;
+  height: 100%; overflow-y: auto;
+  caret-color: var(--cyan); tab-size: 2;
+
+  &::placeholder { color: var(--muted); opacity: .35; font-size: .78rem; }
+
+  /* Styled scrollbar inside textarea */
+  &::-webkit-scrollbar { width: 3px; }
+  &::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 2px; }
+}
+
+/* ── Status bar ──────────────────────────────────────────── */
+.statusBar {
+  display: flex; align-items: center; gap: 18px;
+  padding: 7px 16px; border-top: 1px solid var(--border);
+  background: rgba(0,0,0,.4);
+}
+
+.stat {
+  font-family: var(--mono); font-size: .6rem;
+  letter-spacing: .1em; color: var(--muted);
+}
+
+.saved {
+  margin-left: auto; font-family: var(--mono); font-size: .6rem;
+  color: var(--muted); font-style: italic; letter-spacing: .06em;
+}
+
+@media (max-width: 560px) {
+  .notepad { padding: 20px 16px 60px; }
+  .editorBody { height: 320px; }
+  .lineNums { min-width: 32px; }
+}

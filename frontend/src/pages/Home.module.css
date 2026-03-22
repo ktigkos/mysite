@@ -1,0 +1,134 @@
+.home { padding: 36px 28px 60px; }
+
+/* ── Terminal ────────────────────────────────────────────── */
+.terminal {
+  border: 1px solid var(--border2); border-radius: 4px;
+  max-width: 540px; margin: 36px auto 0;
+  background: rgba(0,0,0,.7);
+  box-shadow: var(--glow-magenta);
+  animation: fadeUp .3s ease both;
+}
+.termBar {
+  display: flex; align-items: center; gap: 5px;
+  padding: 8px 14px; border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+}
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.red    { background: #ff5f57; }
+.yellow { background: #febc2e; }
+.green  { background: #28c840; }
+.termTitle {
+  font-family: var(--mono); font-size: .72rem;
+  letter-spacing: .12em; color: var(--muted); margin-left: 6px;
+}
+.termBody { padding: 16px 18px; min-height: 140px; }
+.termLine {
+  font-family: var(--mono); font-size: .82rem; line-height: 2;
+  color: var(--magenta); text-shadow: var(--text-glow-magenta);
+  animation: slideRight .15s ease both;
+}
+.cursor {
+  display: inline-block; color: var(--lime);
+  text-shadow: var(--text-glow-lime);
+  animation: blink .6s step-end infinite;
+  font-family: var(--mono);
+}
+
+/* ── Hero ────────────────────────────────────────────────── */
+.hero { animation: fadeUp .4s ease both; }
+
+.eyebrow {
+  font-family: var(--mono); font-size: .7rem;
+  letter-spacing: .2em; color: var(--lime);
+  text-shadow: var(--text-glow-lime);
+  text-align: center; margin-bottom: 16px; padding-top: 32px;
+}
+
+.title {
+  text-align: center; margin-bottom: 16px;
+}
+
+.titleGlitch {
+  font-family: var(--display) !important;
+  font-size: clamp(3.5rem, 12vw, 7.5rem);
+  font-weight: 900;
+  letter-spacing: -2px;
+  color: var(--white);
+}
+
+.sub {
+  font-family: var(--body); font-size: .9rem;
+  color: var(--muted); text-align: center;
+  letter-spacing: .1em; margin-bottom: 48px;
+}
+
+/* ── Cards ───────────────────────────────────────────────── */
+.cards {
+  display: grid; grid-template-columns: repeat(2,1fr);
+  gap: 14px; max-width: 620px; margin: 0 auto;
+}
+
+.card {
+  position: relative; display: block;
+  text-decoration: none; text-align: left;
+  padding: 24px 20px 20px;
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  background: var(--surface);
+  cursor: pointer; font-family: inherit;
+  transition: transform .25s, border-color .25s, box-shadow .25s;
+  overflow: hidden;
+
+  &::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,.02) 0%, transparent 70%);
+    opacity: 0; transition: opacity .25s;
+  }
+
+  &:hover { transform: translateY(-4px) scale(1.01); &::before { opacity: 1; } }
+
+  /* Color variants */
+  &.magenta:hover { border-color: var(--magenta); box-shadow: var(--glow-magenta); }
+  &.lime:hover    { border-color: var(--lime);    box-shadow: var(--glow-lime); }
+  &.cyan:hover    { border-color: var(--cyan);    box-shadow: var(--glow-cyan); }
+  &.orange:hover  {
+    border-color: var(--orange);
+    box-shadow: 0 0 10px rgba(255,106,0,.4), 0 0 40px rgba(255,106,0,.15);
+  }
+  &.magenta:hover .cardLabel { color: var(--magenta); text-shadow: var(--text-glow-magenta); }
+  &.lime:hover    .cardLabel { color: var(--lime);    text-shadow: var(--text-glow-lime); }
+  &.cyan:hover    .cardLabel { color: var(--cyan);    text-shadow: var(--text-glow-cyan); }
+  &.orange:hover  .cardLabel { color: var(--orange); }
+  &.magenta:hover .cardArrow { color: var(--magenta); transform: translate(3px,-3px); }
+  &.lime:hover    .cardArrow { color: var(--lime);    transform: translate(3px,-3px); }
+  &.cyan:hover    .cardArrow { color: var(--cyan);    transform: translate(3px,-3px); }
+  &.orange:hover  .cardArrow { color: var(--orange);  transform: translate(3px,-3px); }
+}
+
+.cardNum {
+  font-family: var(--mono); font-size: .62rem;
+  letter-spacing: .18em; color: var(--muted); margin-bottom: 12px;
+}
+.cardIcon {
+  font-size: 1.8rem; margin-bottom: 12px; display: block;
+  animation: float 3.5s ease-in-out infinite;
+}
+.cardLabel {
+  font-family: var(--display); font-size: 1rem; font-weight: 700;
+  letter-spacing: .1em; color: var(--white);
+  margin-bottom: 6px; transition: color .25s, text-shadow .25s;
+}
+.cardDesc {
+  font-family: var(--body); font-size: .72rem;
+  color: var(--muted); letter-spacing: .04em; line-height: 1.5;
+}
+.cardArrow {
+  position: absolute; top: 18px; right: 18px;
+  color: var(--muted); font-size: 1rem;
+  transition: transform .25s, color .25s;
+}
+
+@media (max-width: 560px) {
+  .cards { grid-template-columns: 1fr; }
+  .home  { padding: 20px 16px 60px; }
+}

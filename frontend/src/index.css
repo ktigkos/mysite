@@ -1,0 +1,138 @@
+/* ═══════════════════════════════════════════════════════════
+   NEO-TOKYO TERMINAL — GLOBAL DESIGN SYSTEM
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  --bg:       #000305;
+  --bg2:      #010608;
+  --surface:  #040d10;
+  --surface2: #071318;
+  --border:   #0f2535;
+  --border2:  #163545;
+
+  --lime:     #b8ff00;
+  --lime-dim: #7aaa00;
+  --magenta:  #ff0080;
+  --mag-dim:  #aa0055;
+  --cyan:     #00ffff;
+  --cyan-dim: #00aaaa;
+  --orange:   #ff6a00;
+  --white:    #e8f4f8;
+  --text:     #7ab8cc;
+  --muted:    #1e3d4d;
+
+  --display: 'Orbitron', monospace;
+  --mono:    'VT323', monospace;
+  --body:    'Exo 2', sans-serif;
+
+  --glow-lime:    0 0 10px rgba(184,255,0,.5),    0 0 40px rgba(184,255,0,.2),    0 0 80px rgba(184,255,0,.08);
+  --glow-magenta: 0 0 10px rgba(255,0,128,.5),    0 0 40px rgba(255,0,128,.2),    0 0 80px rgba(255,0,128,.08);
+  --glow-cyan:    0 0 10px rgba(0,255,255,.5),     0 0 40px rgba(0,255,255,.2);
+  --text-glow-lime:    0 0 8px rgba(184,255,0,.8);
+  --text-glow-magenta: 0 0 8px rgba(255,0,128,.8);
+  --text-glow-cyan:    0 0 8px rgba(0,255,255,.8);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--body);
+  background: var(--bg);
+  color: var(--text);
+  cursor: crosshair;
+
+  /* CRT scanlines */
+  &::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 3px,
+      rgba(0,0,0,.12) 3px, rgba(0,0,0,.12) 4px
+    );
+    pointer-events: none;
+    z-index: 9998;
+  }
+}
+
+/* CRT vignette */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse at center,
+    transparent 60%,
+    rgba(0,0,0,.7) 100%
+  );
+  pointer-events: none;
+  z-index: 9997;
+}
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--magenta); }
+
+::selection { background: rgba(255,0,128,.25); color: var(--magenta); }
+
+/* ── Keyframes ───────────────────────────────────────────── */
+@keyframes glitch1 {
+  0%,95%,100% { clip-path: inset(50% 0 30% 0); transform: translate(-3px); }
+  96%          { clip-path: inset(10% 0 85% 0); transform: translate(3px); }
+  97%          { clip-path: inset(70% 0 5% 0);  transform: translate(-2px); }
+  98%          { clip-path: inset(30% 0 50% 0); transform: translate(2px); }
+}
+@keyframes glitch2 {
+  0%,95%,100% { clip-path: inset(20% 0 60% 0); transform: translate(3px); }
+  96%          { clip-path: inset(80% 0 5% 0);  transform: translate(-3px); }
+  97%          { clip-path: inset(40% 0 40% 0); transform: translate(2px); }
+  98%          { clip-path: inset(5% 0 90% 0);  transform: translate(-2px); }
+}
+@keyframes scanDown {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(100vh); }
+}
+@keyframes flicker {
+  0%,100%  { opacity: 1; }
+  92%       { opacity: 1; }
+  93%       { opacity: .4; }
+  94%       { opacity: 1; }
+  96%       { opacity: .6; }
+  97%       { opacity: 1; }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; }
+  50%      { opacity: .3; }
+}
+@keyframes blink {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+@keyframes borderRun {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+@keyframes rainDrop {
+  0%   { transform: translateY(-20px); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: .6; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}

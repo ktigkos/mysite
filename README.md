@@ -1,143 +1,98 @@
-# my.site — Angular + Node.js
+# my.site — React + Vite + Node.js
 
-Cyberpunk personal site with Angular 17 frontend and Node.js/WebSocket backend.
+Neo-Tokyo cyberpunk personal site with React 18 frontend and Node.js/WebSocket backend.
 
 ---
 
 ## Prerequisites
 
-Install these once on your machine if you don't have them:
-
 - **Node.js** v18+ → https://nodejs.org
-- **Angular CLI** → `npm install -g @angular/cli`
-- **MySQL** running locally (MAMP, MAMP PRO, or standalone MySQL)
+- **MySQL** running locally (MAMP or standalone)
+
+No global installs needed — everything runs via `npx` or `npm run`.
 
 ---
 
 ## MySQL Setup
 
-Make sure MySQL is running (port **8889** for MAMP, or change in `backend/server.js`).
-
-Create the two databases — the server auto-creates the tables on first run:
+Make sure MySQL is running. The server auto-creates tables on first run.
 
 ```sql
 CREATE DATABASE IF NOT EXISTS contacts_db;
 CREATE DATABASE IF NOT EXISTS notepad;
 ```
 
-If your MySQL credentials differ from `root / root`, update them in `backend/server.js`.
+If your MySQL credentials differ from `root / root` or port differs from `8889`,
+update them at the top of `backend/server.js`.
 
 ---
 
 ## Project Structure
 
 ```
-angular-mysite/
+react-mysite/
 ├── backend/
-│   ├── server.js          ← Node.js + WebSocket server
+│   ├── server.js          ← Node.js + WebSocket + REST API
 │   └── package.json
 └── frontend/
+    ├── public/            ← snake.html, snake3d.html, favicon.png
     ├── src/
-    │   ├── app/           ← Angular components & services
-    │   ├── index.html
-    │   ├── main.ts
-    │   └── styles.scss
-    ├── angular.json
+    │   ├── components/    ← Shell, RainCanvas, GlitchText, MusicPlayer
+    │   ├── pages/         ← Home, Contact, Notepad
+    │   ├── hooks/         ← useMusic, useNotepad
+    │   ├── App.jsx
+    │   ├── main.jsx
+    │   └── index.css
+    ├── index.html
+    ├── vite.config.js
     └── package.json
 ```
 
 ---
 
-## Setup & Run
-
-### Step 1 — Install backend dependencies
+## Setup & Run (one terminal)
 
 ```bash
+# Step 1 — backend
 cd backend
 npm install
-```
 
-### Step 2 — Install frontend dependencies
-
-```bash
+# Step 2 — frontend
 cd ../frontend
 npm install
-```
-
-### Step 3 — Build the Angular app
-
-```bash
-# Still inside frontend/
 npm run build
-```
 
-This compiles Angular into `frontend/dist/mysite/browser/`.
-
-### Step 4 — Start the backend server
-
-```bash
+# Step 3 — start
 cd ../backend
 node server.js
 ```
 
-### Step 5 — Open the site
-
-Go to **http://localhost:3000** in your browser. Done.
+Open **http://localhost:3000** ✓
 
 ---
 
-## Development Mode (live reload)
+## Development (two terminals, live reload)
 
-For active development, run both in parallel:
-
-**Terminal 1 — Backend:**
+**Terminal 1:**
 ```bash
 cd backend && node server.js
 ```
 
-**Terminal 2 — Angular dev server (with proxy to backend):**
+**Terminal 2:**
 ```bash
-cd frontend && npm start
+cd frontend && npm run dev
 ```
 
-Then open **http://localhost:4200** — Angular will hot-reload on changes,
-and API + WebSocket calls proxy automatically to port 3000.
+Open **http://localhost:4200**
 
----
-
-## Rebuild after frontend changes
-
-Whenever you edit Angular files:
-
-```bash
-cd frontend
-npm run build
-```
-
-Then refresh the browser at http://localhost:3000. No server restart needed.
-
-Or use watch mode for continuous rebuild:
-
-```bash
-npm run watch
-```
+Changes to React files hot-reload instantly. No rebuild needed.
 
 ---
 
 ## Ports
 
-| Service         | Port |
-|----------------|------|
-| Node.js server  | 3000 |
-| Angular dev server | 4200 |
-| MySQL (MAMP)    | 8889 |
-
-cd angular-mysite/backend
-npm install        # first time only
-
-cd ../frontend
-npm install        # first time only
-npm run build      # compiles Angular → dist/
-
-cd ../backend
-node server.js     # start the site
+| Service              | Port |
+|---------------------|------|
+| Node.js server       | 3000 |
+| Vite dev server      | 4200 |
+| MySQL (MAMP default) | 8889 |
