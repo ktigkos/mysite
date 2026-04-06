@@ -245,7 +245,7 @@ function render() {
   }).join('');
 
 const foreHTML = d.time.map((dt, i) => {
-    const day = new Date(dt   + 'T12:00:00');
+    const day = new Date(dt + 'T12:00:00');
     const name = i === 0 ? 'Today' : DAYS[day.getDay()];
     return `<div class="fday${i === 0 ? ' today' : ''}" onclick="showDayDetail(${i})" style="cursor:pointer">
       <div class="fday-name">${name}</div>
