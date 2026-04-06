@@ -143,6 +143,19 @@
     .fday:nth-child(n+4):nth-child(-n+7) { display: none; }
     .forecast-grid { grid-template-columns: repeat(3, 1fr); }
   }
+
+  /* ── Day detail panel ── */
+.day-detail { margin-top: -1.5rem; margin-bottom: 2.5rem; background: var(--surface); border: 1px solid var(--border2); border-radius: 10px; padding: 20px; animation: fadeUp 0.3s ease both; }
+.day-detail-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+.day-detail-title { font-family: var(--serif); font-size: 1.4rem; color: var(--text); }
+.day-detail-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.day-detail-temps { margin-left: auto; text-align: right; font-size: 13px; color: var(--muted); }
+.day-detail-temps strong { font-size: 1.1rem; color: var(--text); font-weight: 500; }
+.day-detail-hourly { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; }
+.day-detail-hourly::-webkit-scrollbar { height: 3px; }
+.day-detail-hourly::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+.fday.selected { border-color: var(--accent); background: var(--surface2); }
+
 </style>
 </head>
 <body>
@@ -231,10 +244,10 @@ function render() {
     </div>`;
   }).join('');
 
-  const foreHTML = d.time.map((dt, i) => {
-    const day = new Date(dt + 'T12:00:00');
+const foreHTML = d.time.map((dt, i) => {
+    const day = new Date(dt   + 'T12:00:00');
     const name = i === 0 ? 'Today' : DAYS[day.getDay()];
-    return `<div class="fday${i === 0 ? ' today' : ''}">
+    return `<div class="fday${i === 0 ? ' today' : ''}" onclick="showDayDetail(${i})" style="cursor:pointer">
       <div class="fday-name">${name}</div>
       <div class="fday-icon">${ic(d.weather_code[i])}</div>
       <div class="fday-hi">${fmt(d.temperature_2m_max[i])}${u()}</div>
@@ -319,6 +332,69 @@ function render() {
     <div class="section-label fade-in" style="animation-delay:0.15s">7-day forecast</div>
     <div class="forecast-grid fade-in" style="animation-delay:0.18s">${foreHTML}</div>
   `;
+}
+
+let selectedDay = null;
+function showDayDetail(i) {
+  const d = wxData.daily, h = wxData.hourly;
+
+  // Toggle off if same day clicked again
+  if (selectedDay === i) {
+    selectedDay = null;
+    document.querySelectorAll('.fday').forEach(el => el.classList.remove('selected'));
+    const existing = document.getElementById('day-detail');
+    if (existing) existing.remove();
+    return;
+  }
+  selectedDay = i;
+
+  // Highlight selected card
+  document.querySelectorAll('.fday').forEach((el, idx) => {
+    el.classList.toggle('selected', idx === i);
+  });
+
+  // Find hourly slice for this day
+  const dateStr = d.time[i];
+  const dayStart = h.time.findIndex(t => t.startsWith(dateStr));
+  const slice = dayStart >= 0 ? h.time.slice(dayStart, dayStart + 24) : [];
+
+  const hoursHTML = slice.map((t, j) => {
+    const idx = dayStart + j;
+    const hour = new Date(t).getHours().toString().padStart(2, '0') + ':00';
+    const rain = h.precipitation_probability[idx] || 0;
+    return `<div class="hcard">
+      <div class="htime">${hour}</div>
+      <div class="hicon">${ic(h.weather_code[idx])}</div>
+      <div class="htemp">${fmt(h.temperature_2m[idx])}${u()}</div>
+      ${rain > 20 ? `<div class="hrain">${rain}%</div>` : ''}
+    </div>`;
+  }).join('');
+
+  const day = new Date(dateStr + 'T12:00:00');
+  const name = i === 0 ? 'Today' : DAYS[day.getDay()] + ', ' + day.toLocaleDateString('en', { month: 'short', day: 'numeric' });
+  const uvVal = d.uv_index_max ? d.uv_index_max[i] : null;
+
+  const html = `<div class="day-detail" id="day-detail">
+    <div class="day-detail-header">
+      <div>
+        <div class="day-detail-title">${name}</div>
+        <div class="day-detail-sub">${ic(d.weather_code[i])} ${desc(d.weather_code[i])}</div>
+      </div>
+      <div class="day-detail-temps">
+        <strong>H ${fmt(d.temperature_2m_max[i])}${u()}</strong><br>
+        L ${fmt(d.temperature_2m_min[i])}${u()}
+        ${uvVal != null ? `<br><span style="color:var(--hint);font-size:11px">UV ${Math.round(uvVal)} · ${uvLabel(uvVal)}</span>` : ''}
+      </div>
+    </div>
+    <div class="day-detail-hourly">${hoursHTML}</div>
+  </div>`;
+
+  // Insert after the forecast grid
+  const grid = document.querySelector('.forecast-grid');
+  const existing = document.getElementById('day-detail');
+  if (existing) existing.remove();
+  grid.insertAdjacentHTML('afterend', html);
+  document.getElementById('day-detail').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function setUnit(c) { cel = c; render(); }
