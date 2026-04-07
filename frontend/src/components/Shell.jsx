@@ -45,6 +45,7 @@ export default function Shell() {
             { to: '/',        label: 'HOME',    num: '01' },
             { to: '/contact', label: 'CONTACT', num: '02' },
             { to: '/notepad', label: 'NOTEPAD', num: '03' },
+            { to: '/weather', label: 'WEATHER', num: '04' },
           ].map(({ to, label, num }) => (
             <NavLink key={to} to={to} end={to === '/'}
               className={({ isActive }) => `${styles.navItem} ${isActive ? styles.navActive : ''}`}>
