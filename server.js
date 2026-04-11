@@ -90,6 +90,40 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Delete all contacts
+  if (req.method === 'DELETE' && req.url === '/contacts') {
+    db.execute('DELETE FROM contacts', (err) => {
+      res.writeHead(err ? 500 : 200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(err ? { error: 'DB error' } : { ok: true }));
+    });
+    return;
+  }
+
+  // Delete single contact by id
+  if (req.method === 'DELETE' && req.url.startsWith('/contacts/')) {
+    const id = parseInt(req.url.split('/')[2], 10);
+    if (isNaN(id)) { res.writeHead(400); res.end('Bad id'); return; }
+    db.execute('DELETE FROM contacts WHERE id = ?', [id], (err) => {
+      res.writeHead(err ? 500 : 200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(err ? { error: 'DB error' } : { ok: true }));
+    });
+    return;
+  }
+
+  // List all contacts
+  if (req.method === 'GET' && req.url === '/contacts') {
+    db.execute('SELECT id, first_name, last_name, phone FROM contacts ORDER BY id DESC', (err, rows) => {
+      if (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'DB error' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(rows));
+    });
+    return;
+  }
+
   // Load note via HTTP GET
   if (req.method === 'GET' && req.url === '/note') {
     noteDb.execute('SELECT content FROM note WHERE id = 1', (err, rows) => {
