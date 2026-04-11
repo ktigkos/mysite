@@ -43,7 +43,7 @@ export default function Shell() {
         <nav className={styles.nav}>
           {[
             { to: '/',        label: 'HOME',    num: '01' },
-            { to: '/contact', label: 'CONTACT', num: '02' },
+            { to: '/contact', label: 'CONTACTS', num: '02' },
             { to: '/notepad', label: 'NOTEPAD', num: '03' },
             { to: '/weather', label: 'WEATHER', num: '04' },
           ].map(({ to, label, num }) => (
