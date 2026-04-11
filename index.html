@@ -114,6 +114,9 @@
     .pg-btn{font-family:var(--mono);font-size:.68rem;padding:5px 12px;background:transparent;border:1px solid var(--border);border-radius:var(--radius);color:var(--muted);cursor:pointer;transition:all .2s}
     .pg-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
     .pg-btn:disabled{opacity:.3;cursor:default}
+    .ct-del{background:transparent;border:none;cursor:pointer;color:var(--muted);font-size:.9rem;padding:4px 6px;border-radius:var(--radius);transition:color .15s,background .15s;opacity:0;line-height:1}
+    .ct tbody tr:hover .ct-del{opacity:1}
+    .ct-del:hover{color:var(--warn);background:rgba(255,79,79,.1)}
   </style>
 </head>
 <body>
@@ -197,7 +200,10 @@
       <div class="contacts-table-wrap">
         <div class="contacts-table-header">
           <div class="section-tag" style="margin-bottom:0">// stored contacts</div>
-          <div class="contacts-count" id="contactsCount"></div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="contacts-count" id="contactsCount"></div>
+            <button class="btn-ghost" id="clearAllBtn" onclick="clearAllContacts()" style="display:none">Clear All</button>
+          </div>
         </div>
         <div class="table-panel">
           <table class="ct">
@@ -207,6 +213,7 @@
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Phone</th>
+                <th></th>
               </tr>
             </thead>
             <tbody id="contactsTbody"></tbody>
@@ -352,7 +359,7 @@
       })
       .catch(() => {
         document.getElementById('contactsTbody').innerHTML =
-          '<tr><td colspan="4" class="ct-empty">Could not load contacts.</td></tr>';
+          '<tr><td colspan="5" class="ct-empty">Could not load contacts.</td></tr>';
       });
   }
 
@@ -366,11 +373,13 @@
       allContacts.length ? `${allContacts.length} record${allContacts.length !== 1 ? 's' : ''}` : '';
 
     if (allContacts.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="4" class="ct-empty">No contacts saved yet.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" class="ct-empty">No contacts saved yet.</td></tr>';
       pagination.style.display = 'none';
+      document.getElementById('clearAllBtn').style.display = 'none';
       return;
     }
 
+    document.getElementById('clearAllBtn').style.display = '';
     const start = ctPage * ROWS_PER_PAGE;
     const slice = allContacts.slice(start, start + ROWS_PER_PAGE);
     tbody.innerHTML = slice.map((c, i) =>
@@ -379,6 +388,7 @@
         <td>${escHtml(c.first_name)}</td>
         <td>${escHtml(c.last_name)}</td>
         <td>${escHtml(c.phone)}</td>
+        <td style="width:40px;text-align:center"><button class="ct-del" onclick="deleteContact(${c.id})" title="Delete">✕</button></td>
       </tr>`
     ).join('');
 
@@ -395,6 +405,21 @@
   function contactsPage(dir) {
     ctPage += dir;
     renderContacts();
+  }
+
+  function deleteContact(id) {
+    fetch(`/contacts/${id}`, { method: 'DELETE' })
+      .then(r => r.json())
+      .then(() => loadContacts())
+      .catch(() => {});
+  }
+
+  function clearAllContacts() {
+    if (!confirm('Delete all contacts? This cannot be undone.')) return;
+    fetch('/contacts', { method: 'DELETE' })
+      .then(r => r.json())
+      .then(() => loadContacts())
+      .catch(() => {});
   }
 
   function escHtml(s) {
