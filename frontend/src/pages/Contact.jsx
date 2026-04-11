@@ -1,10 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import styles from './Contact.module.css';
 
 export default function Contact() {
-  const [form,   setForm]   = useState({ first_name: '', last_name: '', phone: '' });
-  const [errors, setErrors] = useState({});
-  const [status, setStatus] = useState('idle'); // idle | loading | success | error | missing
+  const [form,     setForm]     = useState({ first_name: '', last_name: '', phone: '' });
+  const [errors,   setErrors]   = useState({});
+  const [status,   setStatus]   = useState('idle'); // idle | loading | success | error | missing
+  const [contacts, setContacts] = useState([]);
+  const [page,     setPage]     = useState(0);
+
+  const ROWS = 7;
+
+  const loadContacts = useCallback(() => {
+    fetch('/api/contacts')
+      .then(r => r.json())
+      .then(data => { if (Array.isArray(data)) setContacts(data); })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => { loadContacts(); }, [loadContacts]);
 
   const validate = () => {
     const e = {};
@@ -21,7 +34,7 @@ export default function Contact() {
     setErrors({});
     setStatus('loading');
     try {
-      const res = await fetch('/api/contacts', {
+      const res  = await fetch('/api/contacts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -30,6 +43,8 @@ export default function Contact() {
       if (data.success) {
         setStatus('success');
         setForm({ first_name: '', last_name: '', phone: '' });
+        setPage(0);
+        loadContacts();
         setTimeout(() => setStatus('idle'), 5000);
       } else {
         setStatus(data.error === 'missing_fields' ? 'missing' : 'error');
@@ -41,10 +56,27 @@ export default function Contact() {
     }
   };
 
+  const deleteContact = (id) => {
+    fetch(`/api/contacts/${id}`, { method: 'DELETE' })
+      .then(() => loadContacts())
+      .catch(() => {});
+  };
+
+  const clearAll = () => {
+    if (!confirm('DELETE ALL CONTACTS — ARE YOU SURE?')) return;
+    fetch('/api/contacts', { method: 'DELETE' })
+      .then(() => { setPage(0); loadContacts(); })
+      .catch(() => {});
+  };
+
   const onChange = (field) => (e) => {
     setForm(f => ({ ...f, [field]: e.target.value }));
     if (errors[field]) setErrors(err => ({ ...err, [field]: '' }));
   };
+
+  const totalPages = Math.max(1, Math.ceil(contacts.length / ROWS));
+  const safePage   = Math.min(page, totalPages - 1);
+  const slice      = contacts.slice(safePage * ROWS, safePage * ROWS + ROWS);
 
   return (
     <div className={styles.contact}>
@@ -113,6 +145,58 @@ export default function Contact() {
             <span className={styles.schemaType}>{type}</span>
           </div>
         ))}
+      </div>
+
+      {/* ── Contacts Table ── */}
+      <div className={styles.tableWrap}>
+        <div className={styles.tableHeader}>
+          <span className={styles.tableTag}>// STORED_RECORDS</span>
+          <div className={styles.tableHeaderRight}>
+            {contacts.length > 0 && (
+              <span className={styles.recordCount}>{contacts.length} RECORD{contacts.length !== 1 ? 'S' : ''}</span>
+            )}
+            {contacts.length > 0 && (
+              <button className={styles.clearBtn} onClick={clearAll}>CLEAR_ALL</button>
+            )}
+          </div>
+        </div>
+        <div className={styles.tablePanel}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th className={styles.th}>#</th>
+                <th className={styles.th}>FIRST_NAME</th>
+                <th className={styles.th}>LAST_NAME</th>
+                <th className={styles.th}>PHONE</th>
+                <th className={styles.th}></th>
+              </tr>
+            </thead>
+            <tbody>
+              {contacts.length === 0 ? (
+                <tr><td colSpan={5} className={styles.tdEmpty}>NO RECORDS FOUND</td></tr>
+              ) : slice.map((c, i) => (
+                <tr key={c.id} className={styles.tr}>
+                  <td className={`${styles.td} ${styles.tdMuted}`}>{safePage * ROWS + i + 1}</td>
+                  <td className={styles.td}>{c.first_name}</td>
+                  <td className={styles.td}>{c.last_name}</td>
+                  <td className={styles.td}>{c.phone}</td>
+                  <td className={styles.td}>
+                    <button className={styles.delBtn} onClick={() => deleteContact(c.id)} title="Delete">✕</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {totalPages > 1 && (
+            <div className={styles.pagination}>
+              <span className={styles.pgInfo}>PAGE {safePage + 1} / {totalPages}</span>
+              <div className={styles.pgBtns}>
+                <button className={styles.pgBtn} onClick={() => setPage(p => p - 1)} disabled={safePage === 0}>← PREV</button>
+                <button className={styles.pgBtn} onClick={() => setPage(p => p + 1)} disabled={safePage === totalPages - 1}>NEXT →</button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

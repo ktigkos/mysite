@@ -60,7 +60,37 @@ const server = http.createServer((req, res) => {
   // CORS for dev
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   if (req.method === 'OPTIONS') { res.writeHead(204); return res.end(); }
+
+  // GET /api/contacts
+  if (req.method === 'GET' && url === '/api/contacts') {
+    db.execute('SELECT id, first_name, last_name, phone FROM contacts ORDER BY id DESC', (err, rows) => {
+      res.writeHead(err ? 500 : 200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(err ? { error: 'db_error' } : rows));
+    });
+    return;
+  }
+
+  // DELETE /api/contacts  (clear all)
+  if (req.method === 'DELETE' && url === '/api/contacts') {
+    db.execute('DELETE FROM contacts', err => {
+      res.writeHead(err ? 500 : 200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(err ? { error: 'db_error' } : { ok: true }));
+    });
+    return;
+  }
+
+  // DELETE /api/contacts/:id
+  if (req.method === 'DELETE' && url.startsWith('/api/contacts/')) {
+    const id = parseInt(url.split('/')[3], 10);
+    if (isNaN(id)) { res.writeHead(400); return res.end('Bad id'); }
+    db.execute('DELETE FROM contacts WHERE id = ?', [id], err => {
+      res.writeHead(err ? 500 : 200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(err ? { error: 'db_error' } : { ok: true }));
+    });
+    return;
+  }
 
   // POST /api/contacts
   if (req.method === 'POST' && url === '/api/contacts') {
