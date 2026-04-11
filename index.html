@@ -277,37 +277,28 @@
     const phone = document.getElementById('phone').value.trim();
     const statusEl = document.getElementById('contactStatus');
     if (!first || !last || !phone) { showStatus(statusEl,'Please fill in all fields.','error'); return; }
-    const body = new URLSearchParams({first_name:first,last_name:last,phone});
-    fetch('/submit',{method:'POST',body})
-      .then(res=>{
-        const url=new URL(res.url), s=url.searchParams.get('status');
-        if (s==='success') {
+    fetch('/contacts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ first_name: first, last_name: last, phone })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.ok) {
           showStatus(statusEl,'✓ Contact saved successfully!','success');
           loadContacts();
-          ['firstName','lastName','phone'].forEach(id=>document.getElementById(id).value='');
-        } else if (s==='missing') {
-          showStatus(statusEl,'⚠ Please fill in all fields.','error');
+          ['firstName','lastName','phone'].forEach(id => document.getElementById(id).value = '');
         } else {
           showStatus(statusEl,'✗ A database error occurred.','error');
         }
       })
-      .catch(()=>showStatus(statusEl,'✗ Network error. Is the server running?','error'));
+      .catch(() => showStatus(statusEl,'✗ Network error. Is the server running?','error'));
   }
   function showStatus(el,msg,type) {
     el.textContent=msg; el.className='status-msg show '+type;
     clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('show'),5000);
   }
   document.getElementById('phone').addEventListener('keydown',e=>{if(e.key==='Enter')submitContact();});
-  (function(){
-    const p=new URLSearchParams(location.search),s=p.get('status');
-    if(!s) return;
-    navigate('contact',document.querySelector('[data-page=contact]'));
-    const el=document.getElementById('contactStatus');
-    if(s==='success') showStatus(el,'✓ Contact saved successfully!','success');
-    if(s==='missing') showStatus(el,'⚠ Please fill in all fields.','error');
-    if(s==='error')   showStatus(el,'✗ A database error occurred.','error');
-    history.replaceState({},'','/');
-  })();
 
   // ── WebSocket Notepad
   let ws,wsInitialised=false,isRemoteUpdate=false;

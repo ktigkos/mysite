@@ -57,19 +57,24 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Handle contact form submission (unchanged)
-  if (req.method === 'POST' && req.url === '/submit') {
+  // Add new contact
+  if (req.method === 'POST' && req.url === '/contacts') {
     let body = '';
     req.on('data', chunk => body += chunk);
     req.on('end', () => {
-      const params = new URLSearchParams(body);
-      const firstName = (params.get('first_name') || '').trim();
-      const lastName  = (params.get('last_name')  || '').trim();
-      const phone     = (params.get('phone')       || '').trim();
+      let data;
+      try { data = JSON.parse(body); } catch {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Invalid JSON' }));
+        return;
+      }
+      const firstName = (data.first_name || '').trim();
+      const lastName  = (data.last_name  || '').trim();
+      const phone     = (data.phone      || '').trim();
 
       if (!firstName || !lastName || !phone) {
-        res.writeHead(302, { Location: '/index.html?status=missing' });
-        res.end();
+        res.writeHead(422, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Missing fields' }));
         return;
       }
 
@@ -79,11 +84,12 @@ const server = http.createServer((req, res) => {
         (err) => {
           if (err) {
             console.error(err);
-            res.writeHead(302, { Location: '/index.html?status=error' });
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'DB error' }));
           } else {
-            res.writeHead(302, { Location: '/index.html?status=success' });
+            res.writeHead(201, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ ok: true }));
           }
-          res.end();
         }
       );
     });
