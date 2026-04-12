@@ -2,6 +2,7 @@
   position: relative; min-height: 100vh;
   display: flex; flex-direction: column;
   animation: flicker 8s ease infinite;
+  filter: brightness(1.35);
 }
 
 /* ── Corners ─────────────────────────────────────────────── */
