@@ -85,12 +85,7 @@ export default function Shell() {
 
       <footer className={styles.footer}>
         <span className={styles.coords}>X:{mouse.x} Y:{mouse.y}</span>
-        <div className={styles.footerLinks}>
-          <a href="snake.html"   className={styles.flink}>▸ SNAKE</a>
-          <span className={styles.divider}>·</span>
-          <a href="snake3d.html" className={styles.flink}>▸ SNAKE_3D</a>
-        </div>
-        <span className={styles.copy}>© MYSITE CORP 2025</span>
+        <span className={styles.copy}>© KASTORAS 2026</span>
       </footer>
     </div>
   );
