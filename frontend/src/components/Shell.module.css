@@ -146,4 +146,8 @@
   .hud { flex-wrap: wrap; height: auto; padding: 8px 16px; gap: 6px; }
   .hudRight { display: none; }
   .main { padding-top: 90px; }
+
+  .nav { overflow-x: auto; width: 100%; scrollbar-width: none; }
+  .nav::-webkit-scrollbar { display: none; }
+  .navItem { white-space: nowrap; flex-shrink: 0; }
 }
