@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wallpapers — My Site</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#090c10;--surface:#0e1318;--border:#1e2830;
+      --accent:#00e5a0;--accent2:#00b4ff;--warn:#ff4f4f;
+      --text:#c8d8e4;--muted:#4a5f6e;
+      --mono:'Space Mono',monospace;--sans:'Syne',sans-serif;
+      --radius:6px;
+      --glow:0 0 20px rgba(0,229,160,.18),0 0 60px rgba(0,229,160,.07);
+      --glow2:0 0 20px rgba(0,180,255,.18),0 0 60px rgba(0,180,255,.07);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,160,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,160,.015) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+    .blob{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;opacity:.4}
+    .blob-1{width:500px;height:500px;background:rgba(0,229,160,.07);top:-100px;right:-100px}
+    .blob-2{width:400px;height:400px;background:rgba(0,180,255,.07);bottom:10%;left:-80px}
+    #app{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 24px 80px}
+
+    /* ── Nav ── */
+    nav{display:flex;align-items:center;justify-content:space-between;padding:28px 0 48px;border-bottom:1px solid var(--border)}
+    .nav-logo{font-family:var(--sans);font-weight:800;font-size:1.1rem;letter-spacing:-.5px;color:#fff;text-decoration:none}
+    .nav-logo span{color:var(--accent)}
+    .nav-links{display:flex;gap:6px;flex-wrap:wrap}
+    .nav-btn{font-family:var(--mono);font-size:.72rem;padding:7px 16px;border:1px solid var(--border);border-radius:var(--radius);background:transparent;color:var(--muted);cursor:pointer;transition:all .2s;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;display:inline-block}
+    .nav-btn:hover,.nav-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(0,229,160,.06)}
+
+    /* ── Page header ── */
+    .section-header{padding:60px 0 40px}
+    .section-tag{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+    .section-title{font-family:var(--sans);font-size:2.2rem;font-weight:800;color:#fff;letter-spacing:-1.5px;margin-bottom:6px}
+    .section-sub{font-size:.78rem;color:var(--muted);line-height:1.7}
+
+    /* ── Controls bar ── */
+    .controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:32px}
+    .search-wrap{position:relative;flex:1;min-width:200px}
+    .search-wrap input{
+      width:100%;font-family:var(--mono);font-size:.82rem;padding:11px 16px 11px 40px;
+      background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+      color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s;
+    }
+    .search-wrap input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,229,160,.08)}
+    .search-wrap input::placeholder{color:var(--muted)}
+    .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.85rem;pointer-events:none}
+    .search-wrap input:focus + .search-icon{color:var(--accent)}
+
+    .filter-group{display:flex;gap:6px;flex-wrap:wrap}
+    .filter-btn{font-family:var(--mono);font-size:.65rem;padding:8px 14px;border:1px solid var(--border);border-radius:var(--radius);background:transparent;color:var(--muted);cursor:pointer;transition:all .2s;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+    .filter-btn:hover{border-color:var(--accent2);color:var(--accent2)}
+    .filter-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(0,229,160,.07)}
+
+    .color-group{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+    .color-label{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+    .color-btn{width:22px;height:22px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform .2s,border-color .2s;flex-shrink:0}
+    .color-btn:hover{transform:scale(1.2)}
+    .color-btn.active{border-color:#fff;transform:scale(1.15)}
+
+    /* ── Sort + results row ── */
+    .results-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:8px}
+    .results-count{font-size:.68rem;letter-spacing:.08em;color:var(--muted)}
+    .sort-wrap{display:flex;align-items:center;gap:8px}
+    .sort-label{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+    .sort-select{font-family:var(--mono);font-size:.68rem;padding:6px 10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);outline:none;cursor:pointer}
+    .sort-select:focus{border-color:var(--accent)}
+
+    /* ── Masonry grid ── */
+    .masonry{columns:4;column-gap:14px}
+    @media(max-width:900px){.masonry{columns:3}}
+    @media(max-width:600px){.masonry{columns:2}}
+    @media(max-width:380px){.masonry{columns:1}}
+
+    .photo-item{
+      break-inside:avoid;margin-bottom:14px;
+      position:relative;border-radius:8px;overflow:hidden;
+      border:1px solid var(--border);
+      cursor:pointer;
+      transition:transform .25s,box-shadow .25s,border-color .25s;
+    }
+    .photo-item:hover{transform:translateY(-3px);box-shadow:var(--glow);border-color:var(--accent)}
+    .photo-item img{display:block;width:100%;height:auto;transition:filter .3s}
+    .photo-item:hover img{filter:brightness(.55)}
+
+    .photo-overlay{
+      position:absolute;inset:0;
+      display:flex;flex-direction:column;justify-content:flex-end;
+      padding:14px;
+      background:linear-gradient(to top,rgba(9,12,16,.85) 0%,transparent 60%);
+      opacity:0;transition:opacity .25s;
+    }
+    .photo-item:hover .photo-overlay{opacity:1}
+    .photo-author{font-size:.62rem;color:var(--text);letter-spacing:.06em;margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .photo-author a{color:var(--accent);text-decoration:none}
+    .photo-author a:hover{text-decoration:underline}
+    .overlay-btns{display:flex;gap:8px}
+    .dl-btn,.preview-btn{
+      font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;
+      padding:7px 12px;border-radius:var(--radius);border:1px solid;
+      cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:5px;
+    }
+    .dl-btn{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+    .dl-btn:hover{box-shadow:var(--glow)}
+    .preview-btn{background:transparent;color:var(--text);border-color:rgba(200,216,228,.3)}
+    .preview-btn:hover{border-color:var(--accent2);color:var(--accent2)}
+
+    /* ── Load more ── */
+    .load-more-wrap{text-align:center;margin-top:36px}
+    .load-more-btn{
+      font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;
+      padding:13px 32px;background:transparent;border:1px solid var(--border);
+      border-radius:var(--radius);color:var(--muted);cursor:pointer;transition:all .2s;
+    }
+    .load-more-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,229,160,.05)}
+    .load-more-btn:disabled{opacity:.3;cursor:default}
+
+    /* ── Empty / error states ── */
+    .state-box{
+      text-align:center;padding:60px 20px;border:1px solid var(--border);
+      border-radius:12px;background:var(--surface);
+    }
+    .state-icon{font-size:2.5rem;margin-bottom:16px}
+    .state-title{font-family:var(--sans);font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:8px}
+    .state-sub{font-size:.75rem;color:var(--muted);line-height:1.7}
+
+    /* ── Spinner ── */
+    .spinner-wrap{text-align:center;padding:48px}
+    .spinner{
+      display:inline-block;width:32px;height:32px;
+      border:2px solid var(--border);border-top-color:var(--accent);
+      border-radius:50%;animation:spin .7s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* ── Lightbox ── */
+    .lightbox{
+      position:fixed;inset:0;z-index:1000;
+      background:rgba(9,12,16,.95);
+      display:none;align-items:center;justify-content:center;
+      padding:20px;backdrop-filter:blur(8px);
+    }
+    .lightbox.open{display:flex}
+    .lightbox-inner{
+      position:relative;max-width:90vw;max-height:90vh;
+      display:flex;flex-direction:column;align-items:center;gap:14px;
+    }
+    .lightbox img{
+      max-width:100%;max-height:78vh;border-radius:8px;
+      border:1px solid var(--border);object-fit:contain;
+      box-shadow:0 0 60px rgba(0,229,160,.12);
+    }
+    .lightbox-meta{display:flex;align-items:center;justify-content:space-between;width:100%;flex-wrap:wrap;gap:10px}
+    .lightbox-author{font-size:.72rem;color:var(--muted)}
+    .lightbox-author a{color:var(--accent);text-decoration:none}
+    .lightbox-btns{display:flex;gap:8px}
+    .lb-dl-btn{
+      font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+      padding:9px 18px;background:var(--accent);color:var(--bg);
+      border:none;border-radius:var(--radius);cursor:pointer;transition:all .2s;text-decoration:none;
+      display:inline-flex;align-items:center;gap:6px;
+    }
+    .lb-dl-btn:hover{box-shadow:var(--glow)}
+    .lightbox-close{
+      position:absolute;top:-16px;right:-16px;
+      width:36px;height:36px;border-radius:50%;
+      background:var(--surface);border:1px solid var(--border);
+      color:var(--text);font-size:1.1rem;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      transition:all .2s;
+    }
+    .lightbox-close:hover{border-color:var(--warn);color:var(--warn)}
+    .lightbox-nav{
+      position:absolute;top:50%;transform:translateY(-50%);
+      background:rgba(14,19,24,.8);border:1px solid var(--border);
+      color:var(--text);font-size:1.4rem;cursor:pointer;
+      width:40px;height:40px;border-radius:var(--radius);
+      display:flex;align-items:center;justify-content:center;
+      transition:all .2s;
+    }
+    .lightbox-nav:hover{border-color:var(--accent);color:var(--accent)}
+    .lightbox-prev{left:-54px}
+    .lightbox-next{right:-54px}
+
+    footer{margin-top:80px;padding-top:28px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .footer-left{font-size:.7rem;color:var(--muted)}
+
+    @media(max-width:580px){
+      nav{flex-direction:column;gap:16px}
+      .controls{flex-direction:column;align-items:stretch}
+      .filter-group{justify-content:center}
+      .lightbox-prev{left:-10px} .lightbox-next{right:-10px}
+      footer{flex-direction:column;gap:8px;text-align:center}
+      .nav-links{overflow-x:auto;scrollbar-width:none;width:100%}
+      .nav-links::-webkit-scrollbar{display:none}
+      .nav-btn{white-space:nowrap;flex-shrink:0}
+    }
+  </style>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div id="app">
+    <nav>
+      <a href="index.html" class="nav-logo">my<span>.</span>site</a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-btn">Home</a>
+        <a href="index.html#contacts" class="nav-btn" onclick="goSection('contact')">Contacts</a>
+        <a href="index.html#notepad"  class="nav-btn" onclick="goSection('notepad')">Notepad</a>
+        <a href="weather.html"        class="nav-btn">Weather</a>
+        <a href="wallpapers.html"     class="nav-btn active">Wallpapers</a>
+      </div>
+    </nav>
+
+    <div class="section-header">
+      <div class="section-tag">// wallpapers</div>
+      <h2 class="section-title">Wallpaper Gallery</h2>
+      <p class="section-sub">Powered by Unsplash. Search, filter, and download high-quality wallpapers.</p>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <!-- Search -->
+      <div class="search-wrap">
+        <input type="text" id="searchInput" placeholder="Search wallpapers..." autocomplete="off" />
+        <span class="search-icon">⌕</span>
+      </div>
+
+      <!-- Orientation -->
+      <div class="filter-group" id="orientGroup">
+        <button class="filter-btn active" data-orient="portrait">📱 Mobile</button>
+        <button class="filter-btn"        data-orient="landscape">🖥 Desktop</button>
+        <button class="filter-btn"        data-orient="squarish">◻ Square</button>
+      </div>
+
+      <!-- Category presets -->
+      <div class="filter-group" id="categoryGroup">
+        <button class="filter-btn active" data-cat="">All</button>
+        <button class="filter-btn" data-cat="dark">Dark</button>
+        <button class="filter-btn" data-cat="cyberpunk">Cyberpunk</button>
+        <button class="filter-btn" data-cat="nature">Nature</button>
+        <button class="filter-btn" data-cat="space">Space</button>
+        <button class="filter-btn" data-cat="abstract">Abstract</button>
+        <button class="filter-btn" data-cat="minimal">Minimal</button>
+        <button class="filter-btn" data-cat="city">City</button>
+      </div>
+    </div>
+
+    <!-- Color filter + sort -->
+    <div class="controls" style="margin-top:-8px">
+      <div class="color-group">
+        <span class="color-label">Color:</span>
+        <button class="color-btn active" data-color="" style="background:linear-gradient(135deg,#00e5a0,#00b4ff)" title="Any"></button>
+        <button class="color-btn" data-color="black_and_white" style="background:linear-gradient(135deg,#888,#222)" title="B&W"></button>
+        <button class="color-btn" data-color="black" style="background:#111;border-color:var(--border)" title="Black"></button>
+        <button class="color-btn" data-color="white" style="background:#eee" title="White"></button>
+        <button class="color-btn" data-color="yellow" style="background:#f5d020" title="Yellow"></button>
+        <button class="color-btn" data-color="orange" style="background:#f37335" title="Orange"></button>
+        <button class="color-btn" data-color="red" style="background:#c0392b" title="Red"></button>
+        <button class="color-btn" data-color="purple" style="background:#8e44ad" title="Purple"></button>
+        <button class="color-btn" data-color="magenta" style="background:#e91e8c" title="Magenta"></button>
+        <button class="color-btn" data-color="blue" style="background:#2980b9" title="Blue"></button>
+        <button class="color-btn" data-color="teal" style="background:#1abc9c" title="Teal"></button>
+        <button class="color-btn" data-color="green" style="background:#27ae60" title="Green"></button>
+      </div>
+
+      <div class="sort-wrap">
+        <span class="sort-label">Sort:</span>
+        <select class="sort-select" id="sortSelect">
+          <option value="relevant">Relevant</option>
+          <option value="latest">Latest</option>
+          <option value="popular">Popular</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Results bar -->
+    <div class="results-bar">
+      <span class="results-count" id="resultsCount"></span>
+    </div>
+
+    <!-- Gallery -->
+    <div id="gallery"></div>
+
+    <!-- Load more -->
+    <div class="load-more-wrap" id="loadMoreWrap" style="display:none">
+      <button class="load-more-btn" id="loadMoreBtn" onclick="loadMore()">Load More →</button>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+    <div class="lightbox-inner" id="lightboxInner">
+      <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+      <button class="lightbox-nav lightbox-prev" onclick="lbNav(-1,event)">‹</button>
+      <button class="lightbox-nav lightbox-next" onclick="lbNav(+1,event)">›</button>
+      <img id="lightboxImg" src="" alt="" />
+      <div class="lightbox-meta">
+        <span class="lightbox-author" id="lightboxAuthor"></span>
+        <div class="lightbox-btns">
+          <a class="lb-dl-btn" id="lightboxDl" href="#" download target="_blank">↓ Download Full</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-left">my.site — wallpapers powered by <a href="https://unsplash.com" target="_blank" style="color:var(--accent);text-decoration:none">Unsplash</a></div>
+  </footer>
+
+  <script>
+  const API_KEY   = 'uaO8e3j55HhBtZHFHa9hLWn8QPaA4R3GCExRwWjow5g';
+  const PER_PAGE  = 24;
+
+  let currentPage   = 1;
+  let currentQuery  = 'wallpaper';
+  let currentOrient = 'portrait';
+  let currentCat    = '';
+  let currentColor  = '';
+  let currentSort   = 'relevant';
+  let totalResults  = 0;
+  let photos        = [];
+  let lbIndex       = 0;
+  let searchTimer   = null;
+
+  // ── Init
+  document.addEventListener('DOMContentLoaded', () => {
+    fetchPhotos(true);
+    bindControls();
+  });
+
+  function bindControls() {
+    // Search
+    document.getElementById('searchInput').addEventListener('input', e => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => {
+        currentQuery = e.target.value.trim() || 'wallpaper';
+        fetchPhotos(true);
+      }, 500);
+    });
+
+    // Orientation
+    document.getElementById('orientGroup').querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#orientGroup .filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentOrient = btn.dataset.orient;
+        fetchPhotos(true);
+      });
+    });
+
+    // Category
+    document.getElementById('categoryGroup').querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#categoryGroup .filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentCat = btn.dataset.cat;
+        fetchPhotos(true);
+      });
+    });
+
+    // Color
+    document.querySelectorAll('.color-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentColor = btn.dataset.color;
+        fetchPhotos(true);
+      });
+    });
+
+    // Sort
+    document.getElementById('sortSelect').addEventListener('change', e => {
+      currentSort = e.target.value;
+      fetchPhotos(true);
+    });
+
+    // Keyboard lightbox
+    document.addEventListener('keydown', e => {
+      if (!document.getElementById('lightbox').classList.contains('open')) return;
+      if (e.key === 'Escape')     closeLightbox();
+      if (e.key === 'ArrowLeft')  lbNav(-1);
+      if (e.key === 'ArrowRight') lbNav(+1);
+    });
+  }
+
+  // ── Fetch
+  async function fetchPhotos(reset = false) {
+    if (reset) { currentPage = 1; photos = []; }
+
+    const gallery = document.getElementById('gallery');
+    if (reset) gallery.innerHTML = '<div class="spinner-wrap"><div class="spinner"></div></div>';
+
+    const q = [currentQuery, currentCat].filter(Boolean).join(' ');
+    let url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(q)}&page=${currentPage}&per_page=${PER_PAGE}&order_by=${currentSort}&orientation=${currentOrient}`;
+    if (currentColor) url += `&color=${currentColor}`;
+
+    try {
+      const res  = await fetch(url, { headers: { Authorization: `Client-ID ${API_KEY}` } });
+      if (!res.ok) throw new Error(res.status);
+      const data = await res.json();
+
+      totalResults = data.total;
+      photos = reset ? data.results : [...photos, ...data.results];
+
+      renderGallery(reset ? data.results : data.results, reset);
+      updateResultsCount();
+      updateLoadMore(data.total_pages);
+    } catch (err) {
+      gallery.innerHTML = `
+        <div class="state-box">
+          <div class="state-icon">⚠</div>
+          <div class="state-title">Could not load photos</div>
+          <div class="state-sub">Check your API key or network connection.<br>Error: ${err.message}</div>
+        </div>`;
+      document.getElementById('loadMoreWrap').style.display = 'none';
+    }
+  }
+
+  function loadMore() {
+    currentPage++;
+    fetchPhotos(false);
+  }
+
+  // ── Render
+  function renderGallery(newPhotos, reset) {
+    const gallery = document.getElementById('gallery');
+    if (reset) gallery.innerHTML = '';
+
+    if (reset && newPhotos.length === 0) {
+      gallery.innerHTML = `
+        <div class="state-box">
+          <div class="state-icon">🔍</div>
+          <div class="state-title">No results found</div>
+          <div class="state-sub">Try a different search term or filters.</div>
+        </div>`;
+      return;
+    }
+
+    if (reset) gallery.className = 'masonry';
+
+    const startIndex = photos.length - newPhotos.length;
+
+    newPhotos.forEach((photo, i) => {
+      const idx  = startIndex + i;
+      const item = document.createElement('div');
+      item.className = 'photo-item';
+      item.innerHTML = `
+        <img src="${photo.urls.small}" alt="${escHtml(photo.alt_description || photo.description || 'wallpaper')}" loading="lazy" />
+        <div class="photo-overlay">
+          <div class="photo-author">
+            Photo by <a href="${photo.user.links.html}?utm_source=mysite&utm_medium=referral" target="_blank">${escHtml(photo.user.name)}</a>
+            on <a href="https://unsplash.com?utm_source=mysite&utm_medium=referral" target="_blank">Unsplash</a>
+          </div>
+          <div class="overlay-btns">
+            <a class="dl-btn" href="${photo.links.download}&force=true" download="${photo.id}.jpg" target="_blank"
+               onclick="triggerDownload('${photo.id}')">↓ Download</a>
+            <button class="preview-btn" onclick="openLightbox(${idx}, event)">⤢ Preview</button>
+          </div>
+        </div>`;
+      item.addEventListener('click', () => openLightbox(idx));
+      gallery.appendChild(item);
+    });
+  }
+
+  function updateResultsCount() {
+    const el = document.getElementById('resultsCount');
+    el.textContent = totalResults ? `${totalResults.toLocaleString()} results` : '';
+  }
+
+  function updateLoadMore(totalPages) {
+    const wrap = document.getElementById('loadMoreWrap');
+    const btn  = document.getElementById('loadMoreBtn');
+    if (totalPages > currentPage) {
+      wrap.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Load More →';
+    } else {
+      wrap.style.display = 'none';
+    }
+  }
+
+  // ── Trigger Unsplash download tracking
+  function triggerDownload(id) {
+    fetch(`https://api.unsplash.com/photos/${id}/download`, {
+      headers: { Authorization: `Client-ID ${API_KEY}` }
+    }).catch(() => {});
+  }
+
+  // ── Lightbox
+  function openLightbox(idx, e) {
+    if (e) e.stopPropagation();
+    lbIndex = idx;
+    renderLightbox();
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function renderLightbox() {
+    const p = photos[lbIndex];
+    if (!p) return;
+    const img = document.getElementById('lightboxImg');
+    img.src = p.urls.regular;
+    img.alt = p.alt_description || 'wallpaper';
+    document.getElementById('lightboxAuthor').innerHTML =
+      `Photo by <a href="${p.user.links.html}?utm_source=mysite&utm_medium=referral" target="_blank">${escHtml(p.user.name)}</a> on <a href="https://unsplash.com?utm_source=mysite&utm_medium=referral" target="_blank">Unsplash</a>`;
+    const dlBtn = document.getElementById('lightboxDl');
+    dlBtn.href = `${p.links.download}&force=true`;
+    dlBtn.onclick = () => triggerDownload(p.id);
+    // Show/hide nav arrows
+    document.querySelector('.lightbox-prev').style.visibility = lbIndex > 0 ? 'visible' : 'hidden';
+    document.querySelector('.lightbox-next').style.visibility = lbIndex < photos.length - 1 ? 'visible' : 'hidden';
+  }
+
+  function closeLightbox(e) {
+    if (e && e.target !== document.getElementById('lightbox')) return;
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function lbNav(dir, e) {
+    if (e) e.stopPropagation();
+    const next = lbIndex + dir;
+    if (next < 0 || next >= photos.length) return;
+    lbIndex = next;
+    renderLightbox();
+  }
+
+  function escHtml(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function goSection(page) {
+    sessionStorage.setItem('goto', page);
+  }
+  </script>
+</body>
+</html>
