@@ -63,8 +63,8 @@
 
 /* ── Cards grid ──────────────────────────────────────────── */
 .cards {
-  display: grid; grid-template-columns: repeat(2,1fr);
-  gap: 16px; max-width: 620px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 16px; max-width: 900px; margin: 0 auto;
   perspective: 1200px;
 }
 
@@ -200,8 +200,30 @@
 .indigo:hover .flipInner,
 .indigo .flipped             { box-shadow: var(--glow-indigo); }
 
+.cyan .flipFront::before,
+.cyan .flipBack::before     { background: linear-gradient(90deg, transparent, var(--cyan), transparent); }
+.cyan .flipBack              { background: rgba(0,255,255,.04); }
+.cyan .cardLabel             { color: var(--cyan); text-shadow: var(--text-glow-cyan); }
+.cyan .backBtn               { color: var(--cyan); }
+.cyan .backBtn:hover         { background: rgba(0,255,255,.1); box-shadow: var(--glow-cyan); }
+.cyan.sliderCardActive .flipInner,
+.cyan:hover .flipInner       { box-shadow: var(--glow-cyan); }
+
+.lime .flipFront::before,
+.lime .flipBack::before     { background: linear-gradient(90deg, transparent, var(--lime), transparent); }
+.lime .flipBack              { background: rgba(184,255,0,.04); }
+.lime .cardLabel             { color: var(--lime); text-shadow: var(--text-glow-lime); }
+.lime .backBtn               { color: var(--lime); }
+.lime .backBtn:hover         { background: rgba(184,255,0,.1); box-shadow: var(--glow-lime); }
+.lime.sliderCardActive .flipInner,
+.lime:hover .flipInner       { box-shadow: var(--glow-lime); }
+
+@media (max-width: 760px) {
+  .cards { grid-template-columns: repeat(2,1fr); max-width: 620px; }
+}
+
 @media (max-width: 560px) {
-  .cards { grid-template-columns: 1fr; }
+  .cards { grid-template-columns: 1fr; max-width: 100%; }
   .home  { padding: 20px 16px 60px; }
   .flipWrap { height: 180px; }
 }

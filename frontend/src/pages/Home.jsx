@@ -14,10 +14,12 @@ const BOOT_LINES = [
 ];
 
 const CARDS = [
-  { num:'01', label:'SNAKE',    desc:'Classic 2D arcade. Eat. Grow. Die.',  back:'Launch the classic snake game.',  href:'snake.html',   color:'magenta', icon:'🐍', external: true  },
-  { num:'02', label:'SNAKE_3D', desc:'Three dimensions. One serpent.',       back:'Enter the 3D arena.',              href:'snake3d.html', color:'violet',  icon:'🌀', external: true  },
-  { num:'03', label:'CONTACTS', desc:'Write records to the database.',       back:'Manage your contact database.',    href:'/contact',     color:'blue',    icon:'◈',  external: false },
-  { num:'04', label:'NOTEPAD',  desc:'Real-time WebSocket sync.',            back:'Open the live synced notepad.',    href:'/notepad',     color:'indigo',  icon:'◎',  external: false },
+  { num:'01', label:'SNAKE',    desc:'Classic 2D arcade. Eat. Grow. Die.',  back:'Launch the classic snake game.',    href:'snake.html',   color:'magenta', icon:'🐍', external: true  },
+  { num:'02', label:'SNAKE_3D', desc:'Three dimensions. One serpent.',       back:'Enter the 3D arena.',               href:'snake3d.html', color:'violet',  icon:'🌀', external: true  },
+  { num:'03', label:'CONTACTS', desc:'Write records to the database.',       back:'Manage your contact database.',     href:'/contact',     color:'blue',    icon:'◈',  external: false },
+  { num:'04', label:'NOTEPAD',  desc:'Real-time WebSocket sync.',            back:'Open the live synced notepad.',     href:'/notepad',     color:'indigo',  icon:'◎',  external: false },
+  { num:'05', label:'WEATHER',  desc:'Live weather for any location.',       back:'Check current weather conditions.', href:'/weather',     color:'cyan',    icon:'🌤', external: false },
+  { num:'06', label:'GALLERY',  desc:'Search & download images.',            back:'Browse the image gallery.',         href:'/gallery',     color:'lime',    icon:'🖼', external: false },
 ];
 
 export default function Home() {

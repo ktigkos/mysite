@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import Lenis from 'lenis';
 import ParticleField from './ParticleField';
-import Cursor from './Cursor';
 import styles from './Shell.module.css';
 
 export default function Shell() {
@@ -39,7 +38,6 @@ export default function Shell() {
   return (
     <div className={styles.shell}>
       <ParticleField />
-      <Cursor />
 
       <div className={`${styles.corner} ${styles.tl}`} />
       <div className={`${styles.corner} ${styles.tr}`} />
@@ -63,6 +61,7 @@ export default function Shell() {
             { to: '/contact', label: 'CONTACTS', num: '02' },
             { to: '/notepad', label: 'NOTEPAD',  num: '03' },
             { to: '/weather', label: 'WEATHER',  num: '04' },
+            { to: '/gallery', label: 'GALLERY',  num: '05' },
           ].map(({ to, label, num }) => (
             <NavLink key={to} to={to} end={to === '/'}
               className={({ isActive }) => `${styles.navItem} ${isActive ? styles.navActive : ''}`}>
