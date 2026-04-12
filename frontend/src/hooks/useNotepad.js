@@ -73,7 +73,7 @@ export function useNotepad(textareaRef) {
   }, [updateCounts, stamp]);
 
   const clearNote = useCallback(() => {
-    if (!confirm('PURGE ALL DATA? This will sync to all connected terminals.')) return;
+    if (!confirm('CLEAR ALL DATA? This will sync to all connected terminals.')) return;
     setTextarea('', false);
     wsRef.current?.send(JSON.stringify({ type: 'update', content: '' }));
     setLastSaved('');

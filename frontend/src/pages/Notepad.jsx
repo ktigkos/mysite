@@ -31,7 +31,7 @@ export default function Notepad() {
             <span className={styles.wsDot} />
             <span className={styles.wsLabel}>{label}</span>
           </div>
-          <button className={styles.clearBtn} onClick={clearNote}>PURGE</button>
+          <button className={styles.clearBtn} onClick={clearNote}>CLEAR</button>
         </div>
 
         {/* Editor body */}
