@@ -5,7 +5,7 @@
   border: 1px solid var(--border2); border-radius: 4px;
   max-width: 540px; margin: 36px auto 0;
   background: rgba(0,0,0,.7);
-  box-shadow: var(--glow-magenta);
+  box-shadow: var(--glow-violet);
   animation: fadeUp .3s ease both;
 }
 .termBar {
@@ -24,12 +24,12 @@
 .termBody { padding: 16px 18px; min-height: 140px; }
 .termLine {
   font-family: var(--mono); font-size: .82rem; line-height: 2;
-  color: var(--magenta); text-shadow: var(--text-glow-magenta);
+  color: var(--indigo); text-shadow: var(--text-glow-indigo);
   animation: slideRight .15s ease both;
 }
 .cursor {
-  display: inline-block; color: var(--lime);
-  text-shadow: var(--text-glow-lime);
+  display: inline-block; color: var(--violet);
+  text-shadow: var(--text-glow-violet);
   animation: blink .6s step-end infinite;
   font-family: var(--mono);
 }
@@ -39,14 +39,12 @@
 
 .eyebrow {
   font-family: var(--mono); font-size: .7rem;
-  letter-spacing: .2em; color: var(--lime);
-  text-shadow: var(--text-glow-lime);
+  letter-spacing: .2em; color: var(--blue);
+  text-shadow: var(--text-glow-blue);
   text-align: center; margin-bottom: 16px; padding-top: 32px;
 }
 
-.title {
-  text-align: center; margin-bottom: 16px;
-}
+.title { text-align: center; margin-bottom: 16px; }
 
 .titleGlitch {
   font-family: var(--display) !important;
@@ -63,55 +61,60 @@
   letter-spacing: .1em; margin-bottom: 48px;
 }
 
-/* ── Cards ───────────────────────────────────────────────── */
+/* ── Cards grid ──────────────────────────────────────────── */
 .cards {
   display: grid; grid-template-columns: repeat(2,1fr);
-  gap: 14px; max-width: 620px; margin: 0 auto;
+  gap: 16px; max-width: 620px; margin: 0 auto;
+  perspective: 1200px;
 }
 
-.card {
-  position: relative; display: block;
-  text-decoration: none; text-align: left;
-  padding: 24px 20px 20px;
+/* ── Flip card wrapper ───────────────────────────────────── */
+.flipWrap {
+  height: 220px;
+  perspective: 900px;
+  cursor: pointer;
+}
+
+.flipInner {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.65s cubic-bezier(0.23, 1, 0.32, 1);
+  border-radius: 4px;
+}
+
+.flipped { transform: rotateY(180deg); }
+
+/* ── Shared face styles ──────────────────────────────────── */
+.flipFront,
+.flipBack {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   border: 1px solid var(--border2);
-  border-radius: 3px;
+  border-radius: 4px;
   background: var(--surface);
-  cursor: pointer; font-family: inherit;
-  transition: transform .25s, border-color .25s, box-shadow .25s;
   overflow: hidden;
-
+  /* Subtle top-edge glow line */
   &::before {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,.02) 0%, transparent 70%);
-    opacity: 0; transition: opacity .25s;
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    opacity: .5; transition: opacity .3s;
   }
+}
 
-  &:hover { transform: translateY(-4px) scale(1.01); &::before { opacity: 1; } }
-
-  /* Color variants */
-  &.magenta:hover { border-color: var(--magenta); box-shadow: var(--glow-magenta); }
-  &.lime:hover    { border-color: var(--lime);    box-shadow: var(--glow-lime); }
-  &.cyan:hover    { border-color: var(--cyan);    box-shadow: var(--glow-cyan); }
-  &.orange:hover  {
-    border-color: var(--orange);
-    box-shadow: 0 0 10px rgba(255,106,0,.4), 0 0 40px rgba(255,106,0,.15);
-  }
-  &.magenta:hover .cardLabel { color: var(--magenta); text-shadow: var(--text-glow-magenta); }
-  &.lime:hover    .cardLabel { color: var(--lime);    text-shadow: var(--text-glow-lime); }
-  &.cyan:hover    .cardLabel { color: var(--cyan);    text-shadow: var(--text-glow-cyan); }
-  &.orange:hover  .cardLabel { color: var(--orange); }
-  &.magenta:hover .cardArrow { color: var(--magenta); transform: translate(3px,-3px); }
-  &.lime:hover    .cardArrow { color: var(--lime);    transform: translate(3px,-3px); }
-  &.cyan:hover    .cardArrow { color: var(--cyan);    transform: translate(3px,-3px); }
-  &.orange:hover  .cardArrow { color: var(--orange);  transform: translate(3px,-3px); }
+/* ── Front face ──────────────────────────────────────────── */
+.flipFront {
+  padding: 22px 20px 18px;
+  display: flex; flex-direction: column;
+  &::before { background: linear-gradient(90deg, transparent, currentColor, transparent); }
 }
 
 .cardNum {
   font-family: var(--mono); font-size: .62rem;
-  letter-spacing: .18em; color: var(--muted); margin-bottom: 12px;
+  letter-spacing: .18em; color: var(--muted); margin-bottom: 10px;
 }
 .cardIcon {
-  font-size: 1.8rem; margin-bottom: 12px; display: block;
+  font-size: 1.8rem; margin-bottom: 10px; display: block;
   animation: float 3.5s ease-in-out infinite;
 }
 .cardLabel {
@@ -122,14 +125,83 @@
 .cardDesc {
   font-family: var(--body); font-size: .72rem;
   color: var(--muted); letter-spacing: .04em; line-height: 1.5;
+  flex: 1;
 }
 .cardArrow {
-  position: absolute; top: 18px; right: 18px;
+  position: absolute; top: 16px; right: 16px;
   color: var(--muted); font-size: 1rem;
-  transition: transform .25s, color .25s;
+  transition: transform .3s, color .3s;
 }
+
+/* ── Back face ───────────────────────────────────────────── */
+.flipBack {
+  transform: rotateY(180deg);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 14px; padding: 24px;
+  text-align: center;
+}
+
+.backIcon  { font-size: 2.2rem; }
+.backText  {
+  font-family: var(--body); font-size: .8rem;
+  color: var(--text); letter-spacing: .06em; line-height: 1.6;
+}
+.backBtn {
+  font-family: var(--display); font-size: .72rem; font-weight: 700;
+  letter-spacing: .16em; padding: 10px 24px;
+  border: 1px solid currentColor; border-radius: 2px;
+  background: transparent; cursor: pointer;
+  transition: background .2s, box-shadow .2s;
+  display: flex; align-items: center; gap: 8px;
+  span { transition: transform .2s; }
+  &:hover span { transform: translateX(4px); }
+}
+
+/* ── Color variants ──────────────────────────────────────── */
+.magenta .flipFront::before,
+.magenta .flipBack::before  { background: linear-gradient(90deg, transparent, var(--magenta), transparent); }
+.magenta .flipBack           { background: rgba(255,0,128,.06); }
+.magenta .cardLabel          { color: var(--magenta); text-shadow: var(--text-glow-magenta); }
+.magenta .cardArrow          { color: var(--magenta); }
+.magenta .backBtn            { color: var(--magenta); }
+.magenta .backBtn:hover      { background: rgba(255,0,128,.12); box-shadow: var(--glow-magenta); }
+.magenta .flipInner          { box-shadow: 0 0 0 1px transparent; }
+.magenta:hover .flipInner,
+.magenta .flipped            { box-shadow: var(--glow-magenta); }
+
+.violet .flipFront::before,
+.violet .flipBack::before   { background: linear-gradient(90deg, transparent, var(--violet), transparent); }
+.violet .flipBack            { background: rgba(123,47,255,.06); }
+.violet .cardLabel           { color: var(--violet); text-shadow: var(--text-glow-violet); }
+.violet .cardArrow           { color: var(--violet); }
+.violet .backBtn             { color: var(--violet); }
+.violet .backBtn:hover       { background: rgba(123,47,255,.12); box-shadow: var(--glow-violet); }
+.violet:hover .flipInner,
+.violet .flipped             { box-shadow: var(--glow-violet); }
+
+.blue .flipFront::before,
+.blue .flipBack::before     { background: linear-gradient(90deg, transparent, var(--blue), transparent); }
+.blue .flipBack              { background: rgba(41,121,255,.06); }
+.blue .cardLabel             { color: var(--blue); text-shadow: var(--text-glow-blue); }
+.blue .cardArrow             { color: var(--blue); }
+.blue .backBtn               { color: var(--blue); }
+.blue .backBtn:hover         { background: rgba(41,121,255,.12); box-shadow: var(--glow-blue); }
+.blue:hover .flipInner,
+.blue .flipped               { box-shadow: var(--glow-blue); }
+
+.indigo .flipFront::before,
+.indigo .flipBack::before   { background: linear-gradient(90deg, transparent, var(--indigo), transparent); }
+.indigo .flipBack            { background: rgba(79,195,247,.06); }
+.indigo .cardLabel           { color: var(--indigo); text-shadow: var(--text-glow-indigo); }
+.indigo .cardArrow           { color: var(--indigo); }
+.indigo .backBtn             { color: var(--indigo); }
+.indigo .backBtn:hover       { background: rgba(79,195,247,.12); box-shadow: var(--glow-indigo); }
+.indigo:hover .flipInner,
+.indigo .flipped             { box-shadow: var(--glow-indigo); }
 
 @media (max-width: 560px) {
   .cards { grid-template-columns: 1fr; }
   .home  { padding: 20px 16px 60px; }
+  .flipWrap { height: 180px; }
 }

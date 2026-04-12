@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import RainCanvas from './RainCanvas';
+import Lenis from 'lenis';
+import ParticleField from './ParticleField';
+import Cursor from './Cursor';
 import styles from './Shell.module.css';
 
 export default function Shell() {
   const [time,  setTime]  = useState('');
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
 
+  // Clock
   useEffect(() => {
     const tick = () => setTime(new Date().toLocaleTimeString('en-GB', { hour12: false }));
     tick();
@@ -14,15 +17,29 @@ export default function Shell() {
     return () => clearInterval(id);
   }, []);
 
+  // Mouse coords for footer
   useEffect(() => {
     const onMove = (e) => setMouse({ x: e.clientX, y: e.clientY });
     window.addEventListener('mousemove', onMove);
     return () => window.removeEventListener('mousemove', onMove);
   }, []);
 
+  // Lenis smooth scroll
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.3,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+    const raf = (time) => { lenis.raf(time); requestAnimationFrame(raf); };
+    requestAnimationFrame(raf);
+    return () => lenis.destroy();
+  }, []);
+
   return (
     <div className={styles.shell}>
-      <RainCanvas />
+      <ParticleField />
+      <Cursor />
 
       <div className={`${styles.corner} ${styles.tl}`} />
       <div className={`${styles.corner} ${styles.tr}`} />
@@ -42,10 +59,10 @@ export default function Shell() {
 
         <nav className={styles.nav}>
           {[
-            { to: '/',        label: 'HOME',    num: '01' },
+            { to: '/',        label: 'HOME',     num: '01' },
             { to: '/contact', label: 'CONTACTS', num: '02' },
-            { to: '/notepad', label: 'NOTEPAD', num: '03' },
-            { to: '/weather', label: 'WEATHER', num: '04' },
+            { to: '/notepad', label: 'NOTEPAD',  num: '03' },
+            { to: '/weather', label: 'WEATHER',  num: '04' },
           ].map(({ to, label, num }) => (
             <NavLink key={to} to={to} end={to === '/'}
               className={({ isActive }) => `${styles.navItem} ${isActive ? styles.navActive : ''}`}>
