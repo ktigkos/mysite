@@ -243,9 +243,9 @@ export default function Weather() {
       <div className={styles.header}>
         <div className={styles.tag}>// MODULE_04</div>
         <h2 className={styles.title}>
-          WEATHER<span className={styles.accent}>_LIVE</span>
+          WEATHER
         </h2>
-        <p className={styles.sub}>Live conditions & 7-day forecast. Open-Meteo + Nominatim geocoding.</p>
+        <p className={styles.sub}>Live conditions & 7-day forecast.</p>
       </div>
 
       {/* Search */}
