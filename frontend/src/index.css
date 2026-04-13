@@ -76,9 +76,25 @@ body::before {
   z-index: 9997;
 }
 
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--violet); }
+/* Hidden by default (mobile/touch) */
+::-webkit-scrollbar { width: 0; height: 0; background: transparent; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: transparent; }
+* { scrollbar-width: none; }
+
+/* Wider scrollbar for desktop (mouse) users only */
+@media (hover: hover) and (pointer: fine) {
+  ::-webkit-scrollbar { width: 10px; height: 10px; background: var(--bg); }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb {
+    background: var(--violet);
+    border: 2px solid var(--bg);
+    border-radius: 6px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--magenta); }
+  /* Firefox */
+  * { scrollbar-width: thin; scrollbar-color: var(--violet) var(--bg); }
+}
 
 ::selection { background: rgba(172,66,255,.3); color: var(--indigo); }
 
