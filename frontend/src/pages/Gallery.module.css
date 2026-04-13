@@ -8,7 +8,7 @@
 }
 .title {
   font-family: var(--display); font-size: 2.8rem; font-weight: 900;
-  letter-spacing: .04em; color: var(--white); margin-bottom: 8px;
+  letter-spacing: .04em; color: #01d5fb; margin-bottom: 8px;
 }
 .accent { color: var(--magenta); text-shadow: var(--text-glow-magenta); }
 .sub { font-family: var(--body); font-size: .78rem; color: var(--muted); letter-spacing: .06em; }

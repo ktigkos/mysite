@@ -138,7 +138,7 @@ export default function Gallery() {
     <div className={styles.gallery}>
       <div className={styles.header}>
         <div className={styles.tag}>// MODULE_05</div>
-        <h2 className={styles.title}>IMAGE<span className={styles.accent}>_GALLERY</span></h2>
+        <h2 className={styles.title}>IMG<span className={styles.accent}>_GALLERY</span></h2>
         <p className={styles.sub}>Powered by Unsplash. Search, filter, and download high-quality images.</p>
       </div>
 
