@@ -62,6 +62,8 @@ body {
   }
 }
 
+body.no-scanlines::after { display: none; }
+
 /* CRT vignette */
 body::before {
   content: '';

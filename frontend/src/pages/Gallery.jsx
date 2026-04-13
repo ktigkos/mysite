@@ -51,6 +51,12 @@ export default function Gallery() {
   const [lbIndex,     setLbIndex]     = useState(null);
   const searchTimer = useRef(null);
 
+  // Disable CRT scanlines overlay while on the gallery page (they interfere with image viewing)
+  useEffect(() => {
+    document.body.classList.add('no-scanlines');
+    return () => document.body.classList.remove('no-scanlines');
+  }, []);
+
   const fetchPhotos = useCallback(async (reset = false) => {
     setLoading(true);
     setError('');
