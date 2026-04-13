@@ -141,6 +141,14 @@
   &:hover { color: var(--lime); text-shadow: var(--text-glow-lime); }
 }
 
+/* Tablet: wrap nav to a second line, keep everything visible */
+@media (max-width: 1024px) and (min-width: 681px) {
+  .nav { position: static; transform: none; }
+  .hud { flex-wrap: wrap; height: auto; padding: 8px 16px; gap: 6px; }
+  .main { padding-top: 90px; }
+}
+
+/* Phone: scroll nav horizontally, hide right-side HUD */
 @media (max-width: 680px) {
   .nav { position: static; transform: none; }
   .hud { flex-wrap: wrap; height: auto; padding: 8px 16px; gap: 6px; }
