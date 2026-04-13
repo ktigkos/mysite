@@ -3,37 +3,37 @@
    ═══════════════════════════════════════════════════════════ */
 
 :root {
-  --bg:       #03010a;
-  --bg2:      #05020e;
-  --surface:  #080514;
-  --surface2: #0d0820;
-  --border:   #1a1035;
-  --border2:  #251848;
+  --bg:       #04010e;
+  --bg2:      #070314;
+  --surface:  #0b071c;
+  --surface2: #120b2d;
+  --border:   #24164a;
+  --border2:  #342265;
 
-  --violet:     #7b2fff;
-  --violet-dim: #4d1eaa;
-  --blue:       #2979ff;
-  --blue-dim:   #1a4ecc;
-  --indigo:     #4fc3f7;
-  --indigo-dim: #0288d1;
-  --magenta:    #cc00ff;
-  --mag-dim:    #880099;
-  --white:      #dde8ff;
-  --text:       #7080b8;
-  --muted:      #2a2050;
+  --violet:     #ac42ff;
+  --violet-dim: #6c2aee;
+  --blue:       #39a9ff;
+  --blue-dim:   #246dff;
+  --indigo:     #6fffff;
+  --indigo-dim: #03beff;
+  --magenta:    #ff00ff;
+  --mag-dim:    #be00d6;
+  --white:      #ffffff;
+  --text:       #9db3ff;
+  --muted:      #3b2d70;
 
   --display: 'Orbitron', monospace;
   --mono:    'VT323', monospace;
   --body:    'Exo 2', sans-serif;
 
-  --glow-violet:  0 0 10px rgba(123,47,255,.6),  0 0 40px rgba(123,47,255,.25), 0 0 80px rgba(123,47,255,.1);
-  --glow-blue:    0 0 10px rgba(41,121,255,.6),   0 0 40px rgba(41,121,255,.25), 0 0 80px rgba(41,121,255,.1);
-  --glow-indigo:  0 0 10px rgba(79,195,247,.5),   0 0 40px rgba(79,195,247,.2);
-  --glow-magenta: 0 0 10px rgba(204,0,255,.6),    0 0 40px rgba(204,0,255,.25), 0 0 80px rgba(204,0,255,.1);
-  --text-glow-violet:  0 0 8px rgba(123,47,255,.9);
-  --text-glow-blue:    0 0 8px rgba(41,121,255,.9);
-  --text-glow-indigo:  0 0 8px rgba(79,195,247,.8);
-  --text-glow-magenta: 0 0 8px rgba(204,0,255,.9);
+  --glow-violet:  0 0 10px rgba(172,66,255,.6),  0 0 40px rgba(172,66,255,.25), 0 0 80px rgba(172,66,255,.1);
+  --glow-blue:    0 0 10px rgba(57,169,255,.6),   0 0 40px rgba(57,169,255,.25), 0 0 80px rgba(57,169,255,.1);
+  --glow-indigo:  0 0 10px rgba(111,255,255,.5),   0 0 40px rgba(111,255,255,.2);
+  --glow-magenta: 0 0 10px rgba(255,0,255,.6),    0 0 40px rgba(255,0,255,.25), 0 0 80px rgba(255,0,255,.1);
+  --text-glow-violet:  0 0 8px rgba(172,66,255,.9);
+  --text-glow-blue:    0 0 8px rgba(57,169,255,.9);
+  --text-glow-indigo:  0 0 8px rgba(111,255,255,.8);
+  --text-glow-magenta: 0 0 8px rgba(255,0,255,.9);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -80,7 +80,7 @@ body::before {
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--violet); }
 
-::selection { background: rgba(123,47,255,.3); color: var(--indigo); }
+::selection { background: rgba(172,66,255,.3); color: var(--indigo); }
 
 /* ── Keyframes ───────────────────────────────────────────── */
 @keyframes glitch1 {
@@ -148,8 +148,8 @@ body::before {
 .cur-dot {
   position: fixed; top: -4px; left: -4px;
   width: 8px; height: 8px; border-radius: 50%;
-  background: #ff0080;
-  box-shadow: 0 0 8px rgba(255,0,128,.9);
+  background: #ff00b3;
+  box-shadow: 0 0 8px rgba(255,0,179,.9);
   pointer-events: none; z-index: 99999;
   will-change: transform;
 }
@@ -157,7 +157,7 @@ body::before {
 .cur-ring {
   position: fixed; top: -18px; left: -18px;
   width: 36px; height: 36px; border-radius: 50%;
-  border: 1px solid rgba(123,47,255,.7);
+  border: 1px solid rgba(172,66,255,.7);
   pointer-events: none; z-index: 99998;
   will-change: transform;
   transition: width .2s, height .2s, top .2s, left .2s, border-color .2s, background .2s;
@@ -165,11 +165,11 @@ body::before {
 .cur-ring.hovering {
   top: -24px; left: -24px;
   width: 48px; height: 48px;
-  border-color: rgba(255,0,128,.6);
-  background: rgba(255,0,128,.05);
+  border-color: rgba(255,0,179,.6);
+  background: rgba(255,0,179,.05);
 }
 .cur-ring.pressed {
   top: -14px; left: -14px;
   width: 28px; height: 28px;
-  background: rgba(123,47,255,.1);
+  background: rgba(172,66,255,.1);
 }

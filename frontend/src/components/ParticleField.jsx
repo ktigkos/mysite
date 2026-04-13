@@ -25,9 +25,9 @@ export default function ParticleField() {
     const colors    = new Float32Array(COUNT * 3);
     const sizes     = new Float32Array(COUNT);
 
-    const c1 = new THREE.Color('#7b2fff'); // violet
-    const c2 = new THREE.Color('#2979ff'); // blue
-    const c3 = new THREE.Color('#ff0080'); // magenta accent
+    const c1 = new THREE.Color('#ac42ff'); // violet
+    const c2 = new THREE.Color('#39a9ff'); // blue
+    const c3 = new THREE.Color('#ff00b3'); // magenta accent
 
     for (let i = 0; i < COUNT; i++) {
       positions[i * 3]     = (Math.random() - 0.5) * 14;

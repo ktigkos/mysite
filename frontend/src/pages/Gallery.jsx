@@ -22,18 +22,18 @@ const ORIENTATIONS = [
 ];
 
 const COLORS = [
-  { val: '',                label: 'Any',   bg: 'linear-gradient(135deg,#00e5a0,#00b4ff)' },
-  { val: 'black_and_white', label: 'B&W',   bg: 'linear-gradient(135deg,#888,#222)' },
-  { val: 'black',           label: 'Black', bg: '#111' },
-  { val: 'white',           label: 'White', bg: '#eee' },
-  { val: 'yellow',          label: 'Yellow',bg: '#f5d020' },
-  { val: 'orange',          label: 'Orange',bg: '#f37335' },
-  { val: 'red',             label: 'Red',   bg: '#c0392b' },
-  { val: 'purple',          label: 'Purple',bg: '#8e44ad' },
-  { val: 'magenta',         label: 'Magenta',bg:'#e91e8c' },
-  { val: 'blue',            label: 'Blue',  bg: '#2980b9' },
-  { val: 'teal',            label: 'Teal',  bg: '#1abc9c' },
-  { val: 'green',           label: 'Green', bg: '#27ae60' },
+  { val: '',                label: 'Any',   bg: 'linear-gradient(135deg,#00ffe0,#00fcff)' },
+  { val: 'black_and_white', label: 'B&W',   bg: 'linear-gradient(135deg,#bebebe,#303030)' },
+  { val: 'black',           label: 'Black', bg: '#181818' },
+  { val: 'white',           label: 'White', bg: '#ffffff' },
+  { val: 'yellow',          label: 'Yellow',bg: '#ffff2d' },
+  { val: 'orange',          label: 'Orange',bg: '#ffa14a' },
+  { val: 'red',             label: 'Red',   bg: '#ff503c' },
+  { val: 'purple',          label: 'Purple',bg: '#c75ff2' },
+  { val: 'magenta',         label: 'Magenta',bg:'#ff2ac4' },
+  { val: 'blue',            label: 'Blue',  bg: '#39b3ff' },
+  { val: 'teal',            label: 'Teal',  bg: '#24ffda' },
+  { val: 'green',           label: 'Green', bg: '#37f486' },
 ];
 
 export default function Gallery() {

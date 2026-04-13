@@ -13,7 +13,7 @@
 
 .title {
   font-family: var(--display); font-size: 2.8rem; font-weight: 900;
-  letter-spacing: .04em; color: #0198b3; margin-bottom: 8px;
+  letter-spacing: .04em; color: #01d5fb; margin-bottom: 8px;
 }
 .accent { color: var(--magenta); text-shadow: var(--text-glow-magenta); }
 
@@ -54,7 +54,7 @@
 .field { margin-bottom: 20px; }
 .fieldErr .input {
   border-color: var(--magenta);
-  box-shadow: 0 0 0 2px rgba(255,0,128,.1);
+  box-shadow: 0 0 0 2px rgba(255,0,179,.1);
 }
 
 .label {
@@ -72,7 +72,7 @@
   &::placeholder { color: var(--muted); opacity: .4; }
   &:focus {
     border-color: var(--magenta);
-    box-shadow: 0 0 0 2px rgba(255,0,128,.08), var(--glow-magenta);
+    box-shadow: 0 0 0 2px rgba(255,0,179,.08), var(--glow-magenta);
   }
 }
 
@@ -110,16 +110,16 @@
   animation: fadeUp .3s ease both;
 }
 .msgSuccess {
-  background: rgba(184,255,0,.07);
-  border: 1px solid rgba(184,255,0,.25); color: var(--lime);
+  background: rgba(255,255,0,.07);
+  border: 1px solid rgba(255,255,0,.25); color: var(--lime);
 }
 .msgError {
-  background: rgba(255,0,128,.07);
-  border: 1px solid rgba(255,0,128,.25); color: var(--magenta);
+  background: rgba(255,0,179,.07);
+  border: 1px solid rgba(255,0,179,.25); color: var(--magenta);
 }
 .msgWarn {
-  background: rgba(255,106,0,.07);
-  border: 1px solid rgba(255,106,0,.25); color: var(--orange);
+  background: rgba(255,148,0,.07);
+  border: 1px solid rgba(255,148,0,.25); color: var(--orange);
 }
 
 /* ── Schema ──────────────────────────────────────────────── */
@@ -169,7 +169,7 @@
   color: var(--muted); cursor: pointer; transition: all .2s;
   &:hover {
     border-color: var(--magenta); color: var(--magenta);
-    background: rgba(255,0,128,.06);
+    background: rgba(255,0,179,.06);
   }
 }
 
@@ -214,7 +214,7 @@
   opacity: 0; line-height: 1; font-family: var(--mono);
 }
 .tr:hover .delBtn { opacity: 1; }
-.delBtn:hover { color: var(--magenta); background: rgba(255,0,128,.1); }
+.delBtn:hover { color: var(--magenta); background: rgba(255,0,179,.1); }
 
 .pagination {
   display: flex; align-items: center; justify-content: space-between;

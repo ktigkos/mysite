@@ -14,9 +14,9 @@
   background: var(--surface2);
 }
 .dot { width: 10px; height: 10px; border-radius: 50%; }
-.red    { background: #ff5f57; }
-.yellow { background: #febc2e; }
-.green  { background: #28c840; }
+.red    { background: #ff857a; }
+.yellow { background: #ffff40; }
+.green  { background: #38ff5a; }
 .termTitle {
   font-family: var(--mono); font-size: .72rem;
   letter-spacing: .12em; color: var(--muted); margin-left: 6px;
@@ -51,8 +51,8 @@
   font-size: clamp(3.5rem, 12vw, 7.5rem);
   font-weight: 900;
   letter-spacing: -2px;
-  color: #9cad02;
-  text-shadow: 0 0 16px rgba(255,0,128,.8), 0 0 50px rgba(255,0,128,.3);
+  color: #daf203;
+  text-shadow: 0 0 16px rgba(255,0,179,.8), 0 0 50px rgba(255,0,179,.3);
 }
 
 .sub {
@@ -161,42 +161,42 @@
 /* ── Color variants ──────────────────────────────────────── */
 .magenta .flipFront::before,
 .magenta .flipBack::before  { background: linear-gradient(90deg, transparent, var(--magenta), transparent); }
-.magenta .flipBack           { background: rgba(255,0,128,.06); }
+.magenta .flipBack           { background: rgba(255,0,179,.06); }
 .magenta .cardLabel          { color: var(--magenta); text-shadow: var(--text-glow-magenta); }
 .magenta .cardArrow          { color: var(--magenta); }
 .magenta .backBtn            { color: var(--magenta); }
-.magenta .backBtn:hover      { background: rgba(255,0,128,.12); box-shadow: var(--glow-magenta); }
+.magenta .backBtn:hover      { background: rgba(255,0,179,.12); box-shadow: var(--glow-magenta); }
 .magenta .flipInner          { box-shadow: 0 0 0 1px transparent; }
 .magenta:hover .flipInner,
 .magenta .flipped            { box-shadow: var(--glow-magenta); }
 
 .violet .flipFront::before,
 .violet .flipBack::before   { background: linear-gradient(90deg, transparent, var(--violet), transparent); }
-.violet .flipBack            { background: rgba(123,47,255,.06); }
+.violet .flipBack            { background: rgba(172,66,255,.06); }
 .violet .cardLabel           { color: var(--violet); text-shadow: var(--text-glow-violet); }
 .violet .cardArrow           { color: var(--violet); }
 .violet .backBtn             { color: var(--violet); }
-.violet .backBtn:hover       { background: rgba(123,47,255,.12); box-shadow: var(--glow-violet); }
+.violet .backBtn:hover       { background: rgba(172,66,255,.12); box-shadow: var(--glow-violet); }
 .violet:hover .flipInner,
 .violet .flipped             { box-shadow: var(--glow-violet); }
 
 .blue .flipFront::before,
 .blue .flipBack::before     { background: linear-gradient(90deg, transparent, var(--blue), transparent); }
-.blue .flipBack              { background: rgba(41,121,255,.06); }
+.blue .flipBack              { background: rgba(57,169,255,.06); }
 .blue .cardLabel             { color: var(--blue); text-shadow: var(--text-glow-blue); }
 .blue .cardArrow             { color: var(--blue); }
 .blue .backBtn               { color: var(--blue); }
-.blue .backBtn:hover         { background: rgba(41,121,255,.12); box-shadow: var(--glow-blue); }
+.blue .backBtn:hover         { background: rgba(57,169,255,.12); box-shadow: var(--glow-blue); }
 .blue:hover .flipInner,
 .blue .flipped               { box-shadow: var(--glow-blue); }
 
 .indigo .flipFront::before,
 .indigo .flipBack::before   { background: linear-gradient(90deg, transparent, var(--indigo), transparent); }
-.indigo .flipBack            { background: rgba(79,195,247,.06); }
+.indigo .flipBack            { background: rgba(111,255,255,.06); }
 .indigo .cardLabel           { color: var(--indigo); text-shadow: var(--text-glow-indigo); }
 .indigo .cardArrow           { color: var(--indigo); }
 .indigo .backBtn             { color: var(--indigo); }
-.indigo .backBtn:hover       { background: rgba(79,195,247,.12); box-shadow: var(--glow-indigo); }
+.indigo .backBtn:hover       { background: rgba(111,255,255,.12); box-shadow: var(--glow-indigo); }
 .indigo:hover .flipInner,
 .indigo .flipped             { box-shadow: var(--glow-indigo); }
 
@@ -211,10 +211,10 @@
 
 .lime .flipFront::before,
 .lime .flipBack::before     { background: linear-gradient(90deg, transparent, var(--lime), transparent); }
-.lime .flipBack              { background: rgba(184,255,0,.04); }
+.lime .flipBack              { background: rgba(255,255,0,.04); }
 .lime .cardLabel             { color: var(--lime); text-shadow: var(--text-glow-lime); }
 .lime .backBtn               { color: var(--lime); }
-.lime .backBtn:hover         { background: rgba(184,255,0,.1); box-shadow: var(--glow-lime); }
+.lime .backBtn:hover         { background: rgba(255,255,0,.1); box-shadow: var(--glow-lime); }
 .lime.sliderCardActive .flipInner,
 .lime:hover .flipInner       { box-shadow: var(--glow-lime); }
 

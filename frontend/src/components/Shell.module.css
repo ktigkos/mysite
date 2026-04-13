@@ -30,7 +30,7 @@
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 24px; height: 50px;
-  background: linear-gradient(180deg, rgba(0,3,5,.98) 0%, rgba(0,3,5,.85) 100%);
+  background: linear-gradient(180deg, rgba(0,4,7,.98) 0%, rgba(0,4,7,.85) 100%);
   border-bottom: 1px solid var(--border2);
   backdrop-filter: blur(16px);
   &::after {
@@ -91,10 +91,10 @@
 
   &::before {
     content: ''; position: absolute; inset: 0;
-    background: rgba(184,255,0,.04); opacity: 0; transition: opacity .2s;
+    background: rgba(255,255,0,.04); opacity: 0; transition: opacity .2s;
   }
   &:hover {
-    color: var(--lime); border-color: rgba(184,255,0,.3);
+    color: var(--lime); border-color: rgba(255,255,0,.3);
     text-shadow: var(--text-glow-lime);
     &::before { opacity: 1; }
     .navNum { color: var(--lime); }
@@ -104,7 +104,7 @@
 .navActive {
   color: var(--lime) !important;
   border-color: var(--lime) !important;
-  background: rgba(184,255,0,.07);
+  background: rgba(255,255,0,.07);
   box-shadow: var(--glow-lime);
   text-shadow: var(--text-glow-lime);
   .navNum { color: var(--lime); }
@@ -125,7 +125,7 @@
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 24px; height: 34px;
-  background: rgba(0,3,5,.96);
+  background: rgba(0,4,7,.96);
   border-top: 1px solid var(--border);
   backdrop-filter: blur(12px);
   font-family: var(--mono);

@@ -26,7 +26,7 @@ export default function RainCanvas() {
       frame++;
       if (frame % 2 !== 0) { animId = requestAnimationFrame(draw); return; } // 30fps
 
-      ctx.fillStyle = 'rgba(0,3,5,0.05)';
+      ctx.fillStyle = 'rgba(0,4,7,0.05)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.font = `${fontSize}px 'VT323', monospace`;
@@ -37,8 +37,8 @@ export default function RainCanvas() {
 
         // Alternate between magenta and lime with occasional cyan
         const r = Math.random();
-        if (r < 0.6)       ctx.fillStyle = 'rgba(255,0,128,0.55)';
-        else if (r < 0.85) ctx.fillStyle = 'rgba(184,255,0,0.45)';
+        if (r < 0.6)       ctx.fillStyle = 'rgba(255,0,179,0.55)';
+        else if (r < 0.85) ctx.fillStyle = 'rgba(255,255,0,0.45)';
         else               ctx.fillStyle = 'rgba(0,255,255,0.35)';
 
         ctx.fillText(char, x, y * fontSize);
