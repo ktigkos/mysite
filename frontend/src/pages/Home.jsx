@@ -25,9 +25,22 @@ const CARDS = [
 export default function Home() {
   const [lines,    setLines]    = useState([]);
   const [bootDone, setBootDone] = useState(false);
+  const [flippedIdx, setFlippedIdx] = useState(null); // which card is flipped (touch devices)
   const heroRef  = useRef(null);
   const cardsRef = useRef(null);
   const navigate = useNavigate();
+
+  // Tap outside any card un-flips (mirrors desktop mouse-leave behavior on touch)
+  useEffect(() => {
+    if (flippedIdx === null) return;
+    const onDocPointerDown = (e) => {
+      if (cardsRef.current && !cardsRef.current.contains(e.target)) {
+        setFlippedIdx(null);
+      }
+    };
+    document.addEventListener('pointerdown', onDocPointerDown);
+    return () => document.removeEventListener('pointerdown', onDocPointerDown);
+  }, [flippedIdx]);
 
   useEffect(() => {
     let i = 0;
@@ -100,8 +113,14 @@ export default function Home() {
           </p>
 
           <div className={styles.cards} ref={cardsRef}>
-            {CARDS.map((card) => (
-              <FlipCard key={card.num} card={card} navigate={navigate} />
+            {CARDS.map((card, i) => (
+              <FlipCard
+                key={card.num}
+                card={card}
+                navigate={navigate}
+                isFlipped={flippedIdx === i}
+                onFlip={() => setFlippedIdx(idx => idx === i ? null : i)}
+              />
             ))}
           </div>
         </div>
@@ -110,9 +129,9 @@ export default function Home() {
   );
 }
 
-function FlipCard({ card, navigate }) {
+function FlipCard({ card, navigate, isFlipped, onFlip }) {
   const { num, label, desc, back, href, color, icon, external } = card;
-  const [flipped, setFlipped] = useState(false);
+  const [hoverFlipped, setHoverFlipped] = useState(false); // desktop hover only
   const innerRef = useRef(null);
 
   const go = (e) => {
@@ -121,13 +140,24 @@ function FlipCard({ card, navigate }) {
     else navigate(href);
   };
 
+  // Desktop: hover flips, leave un-flips.
+  // Touch: click toggles (managed by parent via onFlip).
+  const onPointerEnter = (e) => {
+    if (e.pointerType === 'mouse') setHoverFlipped(true);
+  };
+  const onPointerLeave = (e) => {
+    if (e.pointerType === 'mouse') setHoverFlipped(false);
+  };
+
+  const flipped = hoverFlipped || isFlipped;
+
   return (
     <div
       className={`${styles.flipWrap} ${styles[color]}`}
       data-anim="card"
-      onMouseEnter={() => setFlipped(true)}
-      onMouseLeave={() => setFlipped(false)}
-      onClick={() => setFlipped(f => !f)}
+      onPointerEnter={onPointerEnter}
+      onPointerLeave={onPointerLeave}
+      onClick={onFlip}
     >
       <div ref={innerRef} className={`${styles.flipInner} ${flipped ? styles.flipped : ''}`}>
 
