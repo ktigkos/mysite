@@ -437,6 +437,23 @@
   function escHtml(s) {
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
+
+  // ── Cross-page navigation: honor sessionStorage.goto or URL hash
+  // set by gallery.html / weather.html nav links so they land on the
+  // correct sub-page instead of the default home view.
+  document.addEventListener('DOMContentLoaded', () => {
+    let target = sessionStorage.getItem('goto');
+    sessionStorage.removeItem('goto');
+    if (!target) {
+      const h = (location.hash || '').replace('#','').toLowerCase();
+      if (h === 'contacts' || h === 'contact') target = 'contact';
+      else if (h === 'notepad') target = 'notepad';
+    }
+    if (target === 'contact' || target === 'notepad') {
+      const btn = document.querySelector(`.nav-btn[data-page="${target}"]`);
+      navigate(target, btn);
+    }
+  });
   </script>
 </body>
 </html>
