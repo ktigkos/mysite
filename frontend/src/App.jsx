@@ -5,14 +5,7 @@ import Home    from './pages/Home';
 import Contact from './pages/Contact';
 import Notepad from './pages/Notepad';
 import Gallery from './pages/Gallery';
-
-const Weather = () => (
-  <iframe 
-    src="/weather.html" 
-    style={{ width: '100%', height: '90vh', border: 'none' }} 
-    title="Weather Page"
-  />
-);
+import Weather from './pages/Weather';
 
 export default function App() {
   return (
