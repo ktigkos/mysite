@@ -173,3 +173,10 @@ body::before {
   width: 28px; height: 28px;
   background: rgba(172,66,255,.1);
 }
+
+/* ── Touch devices: restore native cursor, hide custom one ─ */
+@media (hover: none), (pointer: coarse) {
+  *, *::before, *::after { cursor: auto !important; }
+  body { cursor: auto; }
+  .cur-dot, .cur-ring { display: none !important; }
+}
