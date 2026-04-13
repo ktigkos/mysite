@@ -50,6 +50,9 @@ export default function Gallery() {
   const [error,       setError]       = useState('');
   const [lbIndex,     setLbIndex]     = useState(null);
   const searchTimer = useRef(null);
+  // When user clicks "next" on the last loaded image in the lightbox, we
+  // load more and then auto-advance to the first newly loaded image.
+  const advanceAfterLoad = useRef(false);
 
   // Disable CRT scanlines overlay while on the gallery page (they interfere with image viewing)
   useEffect(() => {
@@ -103,11 +106,26 @@ export default function Gallery() {
     setPage(next);
   };
 
+  // Triggered by lightbox "next" arrow on the last loaded image.
+  const loadMoreFromLightbox = () => {
+    if (loading || page >= totalPages) return;
+    advanceAfterLoad.current = true;
+    loadMore();
+  };
+
   useEffect(() => {
     if (page === 1) return;
     fetchPhotos(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
+
+  // After a load-more triggered from the lightbox, jump to the first new image.
+  useEffect(() => {
+    if (!advanceAfterLoad.current) return;
+    if (loading) return;
+    advanceAfterLoad.current = false;
+    setLbIndex(i => (i === null ? null : Math.min(i + 1, photos.length - 1)));
+  }, [photos.length, loading]);
 
   // Lightbox keyboard
   useEffect(() => {
@@ -115,11 +133,18 @@ export default function Gallery() {
       if (lbIndex === null) return;
       if (e.key === 'Escape')     setLbIndex(null);
       if (e.key === 'ArrowLeft')  setLbIndex(i => Math.max(0, i - 1));
-      if (e.key === 'ArrowRight') setLbIndex(i => Math.min(photos.length - 1, i + 1));
+      if (e.key === 'ArrowRight') {
+        if (lbIndex < photos.length - 1) {
+          setLbIndex(i => i + 1);
+        } else if (page < totalPages && !loading) {
+          loadMoreFromLightbox();
+        }
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [lbIndex, photos.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lbIndex, photos.length, page, totalPages, loading]);
 
   useEffect(() => {
     document.body.style.overflow = lbIndex !== null ? 'hidden' : '';
@@ -269,9 +294,18 @@ export default function Gallery() {
             {lbIndex > 0 && (
               <button className={`${styles.lbNav} ${styles.lbPrev}`} onClick={() => setLbIndex(i => i - 1)}>‹</button>
             )}
-            {lbIndex < photos.length - 1 && (
+            {lbIndex < photos.length - 1 ? (
               <button className={`${styles.lbNav} ${styles.lbNext}`} onClick={() => setLbIndex(i => i + 1)}>›</button>
-            )}
+            ) : page < totalPages ? (
+              <button
+                className={`${styles.lbNav} ${styles.lbNext}`}
+                onClick={loadMoreFromLightbox}
+                disabled={loading}
+                title="Load more images"
+              >
+                {loading ? <span className={styles.lbNavSpinner} /> : '›'}
+              </button>
+            ) : null}
             <img src={lbPhoto.urls.regular} alt={lbPhoto.alt_description || 'image'} />
             <div className={styles.lbMeta}>
               <span className={styles.lbAuthor}>

@@ -172,6 +172,11 @@
 }
 .lbPrev { left: -54px; }
 .lbNext { right: -54px; }
+.lbNavSpinner {
+  display: inline-block; width: 16px; height: 16px;
+  border: 2px solid var(--border2); border-top-color: var(--magenta);
+  border-radius: 50%; animation: spin .7s linear infinite;
+}
 .lbMeta {
   display: flex; align-items: center; justify-content: space-between;
   width: 100%; flex-wrap: wrap; gap: 10px;
