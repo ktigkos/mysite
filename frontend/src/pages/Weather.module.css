@@ -179,14 +179,15 @@
 /* ── Hourly ──────────────────────────────────────────────── */
 .hourlyWrap { margin-bottom: 22px; }
 .hourlyRow {
-  display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px;
+  display: grid; grid-template-columns: repeat(12, 1fr); gap: 8px;
+  padding-bottom: 6px;
 }
 .hourlyRow::-webkit-scrollbar { height: 3px; }
 .hourlyRow::-webkit-scrollbar-track { background: transparent; }
 .hourlyRow::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 99px; }
 
 .hcard {
-  flex: 0 0 64px; background: rgba(0,0,0,.3);
+  min-width: 0; background: rgba(0,0,0,.3);
   border: 1px solid var(--border); border-radius: 2px;
   padding: 12px 8px; text-align: center;
   transition: border-color .2s, background .2s;
@@ -257,6 +258,7 @@
   scrollbar-color: var(--magenta) rgba(255,0,179,.08);
   scrollbar-width: thin;
 }
+.dayDetailHourly .hcard { flex: 0 0 64px; }
 .dayDetailHourly::-webkit-scrollbar { height: 10px; }
 .dayDetailHourly::-webkit-scrollbar-track {
   background: rgba(255,0,179,.08);
@@ -298,6 +300,11 @@
   .cityName { font-size: 2rem; }
   .bigTemp { font-size: 3rem; }
   .wxIcon { font-size: 2.6rem; }
+  .hourlyRow {
+    display: flex; grid-template-columns: none;
+    overflow-x: auto;
+  }
+  .hourlyRow .hcard { flex: 0 0 64px; }
   .dayDetailHourly { scrollbar-width: none; }
   .dayDetailHourly::-webkit-scrollbar { display: none; }
 }
