@@ -253,10 +253,24 @@
 }
 .dayDetailUv { color: var(--muted); font-size: .6rem; letter-spacing: .08em; }
 .dayDetailHourly {
-  display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px;
+  display: flex; gap: 8px; overflow-x: auto; padding-bottom: 14px;
+  scrollbar-color: var(--magenta) rgba(255,0,179,.08);
+  scrollbar-width: thin;
 }
-.dayDetailHourly::-webkit-scrollbar { height: 3px; }
-.dayDetailHourly::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 99px; }
+.dayDetailHourly::-webkit-scrollbar { height: 10px; }
+.dayDetailHourly::-webkit-scrollbar-track {
+  background: rgba(255,0,179,.08);
+  border-radius: 99px;
+  border: 1px solid rgba(255,0,179,.15);
+}
+.dayDetailHourly::-webkit-scrollbar-thumb {
+  background: var(--magenta);
+  border-radius: 99px;
+  box-shadow: var(--glow-magenta);
+}
+.dayDetailHourly::-webkit-scrollbar-thumb:hover {
+  background: #ff33ff;
+}
 
 /* ── States ──────────────────────────────────────────────── */
 .state {
