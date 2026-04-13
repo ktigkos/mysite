@@ -298,6 +298,8 @@
   .cityName { font-size: 2rem; }
   .bigTemp { font-size: 3rem; }
   .wxIcon { font-size: 2.6rem; }
+  .dayDetailHourly { scrollbar-width: none; }
+  .dayDetailHourly::-webkit-scrollbar { display: none; }
 }
 @media (max-width: 400px) {
   .forecastGrid { grid-template-columns: repeat(3, 1fr); }
