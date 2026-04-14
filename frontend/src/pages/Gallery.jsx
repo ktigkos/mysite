@@ -94,7 +94,14 @@ export default function Gallery() {
       const data = await res.json();
       setTotal(data.total);
       setTotalPages(data.total_pages);
-      setPhotos(prev => reset ? data.results : [...prev, ...data.results]);
+      // Unsplash occasionally returns photos we've already seen on earlier
+      // pages (relevance re-ranking between requests). Dedupe by id.
+      setPhotos(prev => {
+        if (reset) return data.results;
+        const existing = new Set(prev.map(p => p.id));
+        const unique = data.results.filter(p => !existing.has(p.id));
+        return [...prev, ...unique];
+      });
       if (reset) setPage(1);
     } catch (e) {
       setError(`Could not load images. (${e.message})`);
