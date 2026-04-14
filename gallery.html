@@ -72,14 +72,11 @@
     .sort-select{font-family:var(--mono);font-size:.68rem;padding:6px 10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);outline:none;cursor:pointer}
     .sort-select:focus{border-color:var(--accent)}
 
-    /* ── Masonry grid ── */
-    .masonry{columns:4;column-gap:14px}
-    @media(max-width:900px){.masonry{columns:3}}
-    @media(max-width:600px){.masonry{columns:2}}
-    @media(max-width:380px){.masonry{columns:1}}
+    /* ── Masonry grid (flex-row of column stacks; column count handled in JS) ── */
+    .masonry{display:flex;gap:14px;align-items:flex-start}
+    .masonry-col{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:14px}
 
     .photo-item{
-      break-inside:avoid;margin-bottom:14px;
       position:relative;border-radius:8px;overflow:hidden;
       border:1px solid var(--border);
       cursor:pointer;
@@ -187,6 +184,12 @@
     .lightbox-nav:hover{border-color:var(--accent);color:var(--accent)}
     .lightbox-prev{left:-54px}
     .lightbox-next{right:-54px}
+    .lb-nav-spinner{
+      display:inline-block;width:16px;height:16px;
+      border:2px solid var(--border);border-top-color:var(--accent);
+      border-radius:50%;animation:spin .7s linear infinite;
+    }
+    .lightbox-nav:disabled{opacity:.6;cursor:default}
 
     footer{margin-top:80px;padding-top:28px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
     .footer-left{font-size:.7rem;color:var(--muted)}
@@ -298,8 +301,8 @@
   <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
     <div class="lightbox-inner" id="lightboxInner">
       <button class="lightbox-close" onclick="closeLightbox()">✕</button>
-      <button class="lightbox-nav lightbox-prev" onclick="lbNav(-1,event)">‹</button>
-      <button class="lightbox-nav lightbox-next" onclick="lbNav(+1,event)">›</button>
+      <button class="lightbox-nav lightbox-prev" id="lbPrev" onclick="lbNav(-1,event)">‹</button>
+      <button class="lightbox-nav lightbox-next" id="lbNext" onclick="lbNextOrLoad(event)">›</button>
       <img id="lightboxImg" src="" alt="" />
       <div class="lightbox-meta">
         <span class="lightbox-author" id="lightboxAuthor"></span>
@@ -325,9 +328,23 @@
   let currentColor  = '';
   let currentSort   = 'relevant';
   let totalResults  = 0;
+  let totalPages    = 0;
   let photos        = [];
   let lbIndex       = 0;
   let searchTimer   = null;
+  let isLoading     = false;
+  let advanceAfterLoad = false;   // lightbox-triggered load-more → jump to first new image
+  let colCount      = getColumnCount();
+
+  // Breakpoints must mirror the old CSS rules:
+  //   ≤380px  → 1 col,  ≤600px → 2 cols,  ≤900px → 3 cols,  else 4 cols.
+  function getColumnCount() {
+    const w = window.innerWidth;
+    if (w <= 380) return 1;
+    if (w <= 600) return 2;
+    if (w <= 900) return 3;
+    return 4;
+  }
 
   // ── Init
   document.addEventListener('DOMContentLoaded', () => {
@@ -386,7 +403,26 @@
       if (!document.getElementById('lightbox').classList.contains('open')) return;
       if (e.key === 'Escape')     closeLightbox();
       if (e.key === 'ArrowLeft')  lbNav(-1);
-      if (e.key === 'ArrowRight') lbNav(+1);
+      if (e.key === 'ArrowRight') {
+        if (lbIndex < photos.length - 1) {
+          lbNav(+1);
+        } else if (currentPage < totalPages && !isLoading) {
+          loadMoreFromLightbox();
+        }
+      }
+    });
+
+    // Re-render on viewport column-count change (debounced)
+    let resizeTimer = 0;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const next = getColumnCount();
+        if (next !== colCount) {
+          colCount = next;
+          renderGalleryAll();
+        }
+      }, 120);
     });
   }
 
@@ -395,11 +431,17 @@
     if (reset) { currentPage = 1; photos = []; }
 
     const gallery = document.getElementById('gallery');
-    if (reset) gallery.innerHTML = '<div class="spinner-wrap"><div class="spinner"></div></div>';
+    if (reset) {
+      gallery.className = '';  // clear masonry class so spinner isn't flexed
+      gallery.innerHTML = '<div class="spinner-wrap"><div class="spinner"></div></div>';
+    }
 
     const q = [currentQuery, currentCat].filter(Boolean).join(' ');
     let url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(q)}&page=${currentPage}&per_page=${PER_PAGE}&order_by=${currentSort}&orientation=${currentOrient}`;
     if (currentColor) url += `&color=${currentColor}`;
+
+    isLoading = true;
+    updateLbNextVisual();
 
     try {
       const res  = await fetch(url, { headers: { Authorization: `Client-ID ${API_KEY}` } });
@@ -407,11 +449,22 @@
       const data = await res.json();
 
       totalResults = data.total;
+      totalPages   = data.total_pages;
+      const prevCount = photos.length;
       photos = reset ? data.results : [...photos, ...data.results];
 
-      renderGallery(reset ? data.results : data.results, reset);
+      renderGalleryAll();
       updateResultsCount();
-      updateLoadMore(data.total_pages);
+      updateLoadMore();
+
+      // If load-more was triggered from the lightbox, jump to first new image.
+      if (advanceAfterLoad) {
+        advanceAfterLoad = false;
+        if (photos.length > prevCount) {
+          lbIndex = prevCount;
+          renderLightbox();
+        }
+      }
     } catch (err) {
       gallery.innerHTML = `
         <div class="state-box">
@@ -420,20 +473,38 @@
           <div class="state-sub">Check your API key or network connection.<br>Error: ${err.message}</div>
         </div>`;
       document.getElementById('loadMoreWrap').style.display = 'none';
+    } finally {
+      isLoading = false;
+      updateLbNextVisual();
     }
   }
 
   function loadMore() {
+    if (isLoading || currentPage >= totalPages) return;
     currentPage++;
     fetchPhotos(false);
   }
 
-  // ── Render
-  function renderGallery(newPhotos, reset) {
-    const gallery = document.getElementById('gallery');
-    if (reset) gallery.innerHTML = '';
+  // Called by the lightbox "next" arrow when we're on the last loaded image
+  // but more pages are available. Flags auto-advance so the lightbox jumps
+  // to the first newly loaded image once the fetch returns.
+  function loadMoreFromLightbox() {
+    if (isLoading || currentPage >= totalPages) return;
+    advanceAfterLoad = true;
+    currentPage++;
+    fetchPhotos(false);
+  }
 
-    if (reset && newPhotos.length === 0) {
+  // ── Render: build 4 (or 3/2/1) column stacks and distribute photos by
+  // index modulo column count, so visual reading order across the top row
+  // is 1, 2, 3, 4 — and new images append to the bottom of each column.
+  function renderGalleryAll() {
+    const gallery = document.getElementById('gallery');
+
+    if (photos.length === 0) {
+      // Don't overwrite spinner while a fetch is in flight.
+      if (isLoading) return;
+      gallery.className = '';
       gallery.innerHTML = `
         <div class="state-box">
           <div class="state-icon">🔍</div>
@@ -443,12 +514,20 @@
       return;
     }
 
-    if (reset) gallery.className = 'masonry';
+    gallery.className = 'masonry';
+    gallery.innerHTML = '';
+    // Create empty column containers
+    const cols = [];
+    for (let c = 0; c < colCount; c++) {
+      const col = document.createElement('div');
+      col.className = 'masonry-col';
+      gallery.appendChild(col);
+      cols.push(col);
+    }
 
-    const startIndex = photos.length - newPhotos.length;
-
-    newPhotos.forEach((photo, i) => {
-      const idx  = startIndex + i;
+    // Distribute photos round-robin
+    photos.forEach((photo, idx) => {
+      const col = cols[idx % colCount];
       const item = document.createElement('div');
       item.className = 'photo-item';
       item.innerHTML = `
@@ -465,7 +544,7 @@
           </div>
         </div>`;
       item.addEventListener('click', () => openLightbox(idx));
-      gallery.appendChild(item);
+      col.appendChild(item);
     });
   }
 
@@ -474,7 +553,7 @@
     el.textContent = totalResults ? `${totalResults.toLocaleString()} results` : '';
   }
 
-  function updateLoadMore(totalPages) {
+  function updateLoadMore() {
     const wrap = document.getElementById('loadMoreWrap');
     const btn  = document.getElementById('loadMoreBtn');
     if (totalPages > currentPage) {
@@ -513,9 +592,36 @@
     const dlBtn = document.getElementById('lightboxDl');
     dlBtn.href = `${p.links.download}&force=true`;
     dlBtn.onclick = () => triggerDownload(p.id);
-    // Show/hide nav arrows
-    document.querySelector('.lightbox-prev').style.visibility = lbIndex > 0 ? 'visible' : 'hidden';
-    document.querySelector('.lightbox-next').style.visibility = lbIndex < photos.length - 1 ? 'visible' : 'hidden';
+    // Prev arrow
+    document.getElementById('lbPrev').style.visibility = lbIndex > 0 ? 'visible' : 'hidden';
+    // Next arrow — may show a spinner / become a load-more trigger
+    updateLbNextVisual();
+  }
+
+  // Reconciles the next arrow's visual state with current conditions.
+  // Three cases:
+  //   1. Not at last image → show ›, enabled.
+  //   2. At last image AND more pages exist → show › (or spinner if loading),
+  //      click triggers load-more.
+  //   3. At absolute end of results → hide.
+  function updateLbNextVisual() {
+    const btn = document.getElementById('lbNext');
+    if (!btn) return;
+    if (photos.length === 0) { btn.style.visibility = 'hidden'; return; }
+    const atLast = lbIndex >= photos.length - 1;
+    if (!atLast) {
+      btn.style.visibility = 'visible';
+      btn.disabled = false;
+      btn.innerHTML = '›';
+      btn.title = '';
+    } else if (currentPage < totalPages) {
+      btn.style.visibility = 'visible';
+      btn.disabled = isLoading;
+      btn.innerHTML = isLoading ? '<span class="lb-nav-spinner"></span>' : '›';
+      btn.title = 'Load more images';
+    } else {
+      btn.style.visibility = 'hidden';
+    }
   }
 
   function closeLightbox(e) {
@@ -530,6 +636,18 @@
     if (next < 0 || next >= photos.length) return;
     lbIndex = next;
     renderLightbox();
+  }
+
+  // The next arrow is a dual-purpose button: either step to the next image
+  // or trigger a load-more (when we're at the last loaded image and there
+  // are more pages available).
+  function lbNextOrLoad(e) {
+    if (e) e.stopPropagation();
+    if (lbIndex < photos.length - 1) {
+      lbNav(+1);
+    } else if (currentPage < totalPages && !isLoading) {
+      loadMoreFromLightbox();
+    }
   }
 
   function escHtml(s) {
