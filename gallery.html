@@ -451,7 +451,15 @@
       totalResults = data.total;
       totalPages   = data.total_pages;
       const prevCount = photos.length;
-      photos = reset ? data.results : [...photos, ...data.results];
+      if (reset) {
+        photos = data.results;
+      } else {
+        // Unsplash sometimes returns photos we've already seen on earlier
+        // pages (relevance re-ranking between requests). Dedupe by id.
+        const existingIds = new Set(photos.map(p => p.id));
+        const unique = data.results.filter(p => !existingIds.has(p.id));
+        photos = [...photos, ...unique];
+      }
 
       renderGalleryAll();
       updateResultsCount();
