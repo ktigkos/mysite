@@ -1,8 +1,19 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import styles from './Gallery.module.css';
 
 const API_KEY  = 'uaO8e3j55HhBtZHFHa9hLWn8QPaA4R3GCExRwWjow5g';
 const PER_PAGE = 24;
+
+// Determine how many masonry columns to show at the current viewport width.
+// Must mirror the breakpoints in Gallery.module.css.
+const getColumnCount = () => {
+  if (typeof window === 'undefined') return 4;
+  const w = window.innerWidth;
+  if (w <= 380)  return 1;
+  if (w <= 640)  return 2;
+  if (w <= 1000) return 3;
+  return 4;
+};
 
 const CATEGORIES = [
   { label: 'All',       val: '' },
@@ -49,10 +60,21 @@ export default function Gallery() {
   const [loading,     setLoading]     = useState(false);
   const [error,       setError]       = useState('');
   const [lbIndex,     setLbIndex]     = useState(null);
+  const [colCount,    setColCount]    = useState(getColumnCount);
   const searchTimer = useRef(null);
   // When user clicks "next" on the last loaded image in the lightbox, we
   // load more and then auto-advance to the first newly loaded image.
   const advanceAfterLoad = useRef(false);
+
+  // Distribute photos into N columns by index modulo column count, so the
+  // visual reading order across the top row is 1, 2, 3, 4, 5, ...
+  const columns = useMemo(() => {
+    const cols = Array.from({ length: colCount }, () => []);
+    photos.forEach((photo, idx) => {
+      cols[idx % colCount].push({ photo, idx });
+    });
+    return cols;
+  }, [photos, colCount]);
 
   // Disable CRT scanlines overlay while on the gallery page (they interfere with image viewing)
   useEffect(() => {
@@ -126,6 +148,13 @@ export default function Gallery() {
     advanceAfterLoad.current = false;
     setLbIndex(i => (i === null ? null : Math.min(i + 1, photos.length - 1)));
   }, [photos.length, loading]);
+
+  // Track viewport-driven column count.
+  useEffect(() => {
+    const onResize = () => setColCount(getColumnCount());
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   // Lightbox keyboard
   useEffect(() => {
@@ -249,29 +278,33 @@ export default function Gallery() {
         </div>
       )}
 
-      {/* Masonry */}
+      {/* Masonry — columns built explicitly to enforce left-to-right index order */}
       {photos.length > 0 && (
         <div className={styles.masonry}>
-          {photos.map((photo, idx) => (
-            <div key={photo.id} className={styles.photoItem} onClick={() => setLbIndex(idx)}>
-              <img src={photo.urls.small} alt={photo.alt_description || 'image'} loading="lazy" />
-              <div className={styles.photoOverlay}>
-                <div className={styles.photoAuthor}>
-                  Photo by <a href={`${photo.user.links.html}?utm_source=mysite&utm_medium=referral`}
-                    target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}>{photo.user.name}</a>
-                  {' '}on{' '}
-                  <a href="https://unsplash.com?utm_source=mysite&utm_medium=referral"
-                    target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}>Unsplash</a>
+          {columns.map((col, colIdx) => (
+            <div key={colIdx} className={styles.masonryCol}>
+              {col.map(({ photo, idx }) => (
+                <div key={photo.id} className={styles.photoItem} onClick={() => setLbIndex(idx)}>
+                  <img src={photo.urls.small} alt={photo.alt_description || 'image'} loading="lazy" />
+                  <div className={styles.photoOverlay}>
+                    <div className={styles.photoAuthor}>
+                      Photo by <a href={`${photo.user.links.html}?utm_source=mysite&utm_medium=referral`}
+                        target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}>{photo.user.name}</a>
+                      {' '}on{' '}
+                      <a href="https://unsplash.com?utm_source=mysite&utm_medium=referral"
+                        target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}>Unsplash</a>
+                    </div>
+                    <div className={styles.overlayBtns}>
+                      <a className={styles.dlBtn}
+                        href={`${photo.links.download}&force=true`}
+                        download={`${photo.id}.jpg`}
+                        target="_blank" rel="noreferrer"
+                        onClick={e => { e.stopPropagation(); triggerDownload(photo.id); }}>↓ Download</a>
+                      <button className={styles.previewBtn} onClick={e => { e.stopPropagation(); setLbIndex(idx); }}>⤢ Preview</button>
+                    </div>
+                  </div>
                 </div>
-                <div className={styles.overlayBtns}>
-                  <a className={styles.dlBtn}
-                    href={`${photo.links.download}&force=true`}
-                    download={`${photo.id}.jpg`}
-                    target="_blank" rel="noreferrer"
-                    onClick={e => { e.stopPropagation(); triggerDownload(photo.id); }}>↓ Download</a>
-                  <button className={styles.previewBtn} onClick={e => { e.stopPropagation(); setLbIndex(idx); }}>⤢ Preview</button>
-                </div>
-              </div>
+              ))}
             </div>
           ))}
         </div>
