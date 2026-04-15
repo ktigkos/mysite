@@ -27,7 +27,7 @@
   background: var(--surface); border: 1px solid var(--border2);
   border-radius: 2px; color: var(--white); outline: none;
   transition: border-color .2s, box-shadow .2s;
-  &::placeholder { color: var(--muted); opacity: .5; }
+  &::placeholder { color: var(--muted); opacity: .8; }
   &:focus { border-color: var(--magenta); box-shadow: 0 0 0 2px rgba(255,0,179,.08); }
 }
 

@@ -69,7 +69,7 @@
   border-radius: 2px; color: var(--white); outline: none;
   transition: border-color .2s, box-shadow .2s;
   caret-color: var(--magenta);
-  &::placeholder { color: var(--muted); opacity: .4; }
+  &::placeholder { color: var(--muted); opacity: .75; }
   &:focus {
     border-color: var(--magenta);
     box-shadow: 0 0 0 2px rgba(255,0,179,.08), var(--glow-magenta);

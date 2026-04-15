@@ -7,8 +7,8 @@
   --bg2:      #070314;
   --surface:  #0b071c;
   --surface2: #120b2d;
-  --border:   #24164a;
-  --border2:  #342265;
+  --border:   #3f2780;
+  --border2:  #533aa3;
 
   --violet:     #ac42ff;
   --violet-dim: #6c2aee;
@@ -20,7 +20,8 @@
   --mag-dim:    #be00d6;
   --white:      #ffffff;
   --text:       #9db3ff;
-  --muted:      #3b2d70;
+  --muted:      #6d5bb8;
+  --muted-bright: #9a8ad9;
 
   --display: 'Orbitron', monospace;
   --mono:    'VT323', monospace;

@@ -99,7 +99,7 @@
   height: 100%; overflow-y: auto;
   caret-color: var(--cyan); tab-size: 2;
 
-  &::placeholder { color: var(--muted); opacity: .35; font-size: .78rem; }
+  &::placeholder { color: var(--muted); opacity: .7; font-size: .78rem; }
 
   /* Styled scrollbar inside textarea */
   &::-webkit-scrollbar { width: 3px; }

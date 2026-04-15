@@ -34,7 +34,7 @@
   caret-color: var(--cyan);
   transition: border-color .2s, box-shadow .2s;
 }
-.searchInput::placeholder { color: var(--muted); opacity: .4; }
+.searchInput::placeholder { color: var(--muted); opacity: .75; }
 .searchInput:focus {
   border-color: var(--cyan);
   box-shadow: 0 0 0 2px rgba(0,255,255,.08), var(--glow-cyan);
@@ -126,7 +126,7 @@
   color: var(--cyan); letter-spacing: .06em;
 }
 .hiLo {
-  font-family: var(--mono); font-size: .68rem; color: var(--muted);
+  font-family: var(--mono); font-size: .68rem; color: var(--muted-bright);
   margin-top: 6px; letter-spacing: .1em;
 }
 
@@ -172,7 +172,7 @@
   color: var(--white); letter-spacing: .02em;
 }
 .metricSub {
-  font-family: var(--mono); font-size: .62rem; color: var(--muted);
+  font-family: var(--mono); font-size: .62rem; color: var(--muted-bright);
   margin-top: 3px; letter-spacing: .06em;
 }
 
@@ -194,7 +194,7 @@
 }
 .hcard:hover { border-color: var(--border2); }
 .hcardNow { border-color: var(--cyan); background: rgba(0,255,255,.06); box-shadow: var(--glow-cyan); }
-.htime { font-family: var(--mono); font-size: .6rem; letter-spacing: .08em; color: var(--muted); margin-bottom: 8px; }
+.htime { font-family: var(--mono); font-size: .6rem; letter-spacing: .08em; color: var(--muted-bright); margin-bottom: 8px; }
 .hicon { font-size: 1.3rem; line-height: 1; margin-bottom: 6px; }
 .htemp { font-family: var(--mono); font-size: .75rem; font-weight: 500; color: var(--white); letter-spacing: .04em; }
 .hrain { font-family: var(--mono); font-size: .6rem; color: var(--cyan); margin-top: 4px; letter-spacing: .04em; }
@@ -212,10 +212,10 @@
 .fday:hover { border-color: var(--border2); background: rgba(0,255,255,.04); }
 .fdayToday { border-color: var(--border2); }
 .fdaySelected { border-color: var(--cyan); background: rgba(0,255,255,.06); box-shadow: var(--glow-cyan); }
-.fdayName { font-family: var(--mono); font-size: .6rem; letter-spacing: .1em; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; }
+.fdayName { font-family: var(--mono); font-size: .6rem; letter-spacing: .1em; color: var(--muted-bright); margin-bottom: 8px; text-transform: uppercase; }
 .fdayIcon { font-size: 1.4rem; line-height: 1; margin-bottom: 8px; }
 .fdayHi { font-family: var(--mono); font-size: .8rem; font-weight: 500; color: var(--white); letter-spacing: .04em; }
-.fdayLo { font-family: var(--mono); font-size: .68rem; color: var(--muted); margin-top: 3px; letter-spacing: .04em; }
+.fdayLo { font-family: var(--mono); font-size: .68rem; color: var(--muted-bright); margin-top: 3px; letter-spacing: .04em; }
 
 /* ── Day detail ──────────────────────────────────────────── */
 .dayDetail {
@@ -240,12 +240,12 @@
   color: var(--white); letter-spacing: .04em; text-transform: uppercase;
 }
 .dayDetailSub {
-  font-family: var(--mono); font-size: .68rem; color: var(--muted);
+  font-family: var(--mono); font-size: .68rem; color: var(--muted-bright);
   margin-top: 4px; letter-spacing: .08em;
 }
 .dayDetailTemps {
   margin-left: auto; text-align: right;
-  font-family: var(--mono); font-size: .68rem; color: var(--muted);
+  font-family: var(--mono); font-size: .68rem; color: var(--muted-bright);
   letter-spacing: .06em;
 }
 .dayDetailTemps strong {
