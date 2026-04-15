@@ -49,7 +49,7 @@
 
 .sys {
   font-family: var(--mono); font-size: .75rem;
-  letter-spacing: .16em; color: #d8e3ff;
+  letter-spacing: .16em; color: #a8b9d9;
 }
 
 .logo {
@@ -57,9 +57,9 @@
   text-decoration: none; letter-spacing: .1em;
   display: flex; align-items: baseline; gap: 1px;
 }
-.logoMy   { color: var(--cyan); text-shadow: var(--text-glow-cyan); }
-.logoDot  { color: var(--magenta); text-shadow: var(--text-glow-magenta); }
-.logoSite { color: var(--magenta); text-shadow: var(--text-glow-magenta); }
+.logoMy   { color: #00cccc; text-shadow: var(--text-glow-cyan); }
+.logoDot  { color: #cc0090; text-shadow: var(--text-glow-magenta); }
+.logoSite { color: #cc0090; text-shadow: var(--text-glow-magenta); }
 
 .online {
   font-family: var(--mono); font-size: .62rem;
@@ -72,7 +72,7 @@
 
 .clock {
   font-family: var(--mono); font-size: .68rem;
-  letter-spacing: .1em; color: #d8e3ff;
+  letter-spacing: .1em; color: #a8b9d9;
 }
 
 /* ── Nav ─────────────────────────────────────────────────── */
@@ -131,13 +131,13 @@
   font-family: var(--mono);
 }
 
-.coords, .copy { font-size: .58rem; letter-spacing: .1em; color: #d8e3ff; }
+.coords, .copy { font-size: .58rem; letter-spacing: .1em; color: #a8b9d9; }
 
 .footerLinks { display: flex; align-items: center; gap: 10px; }
 
 .flink {
   font-size: .6rem; letter-spacing: .14em;
-  color: #d8e3ff; text-decoration: none; transition: color .2s, text-shadow .2s;
+  color: #a8b9d9; text-decoration: none; transition: color .2s, text-shadow .2s;
   &:hover { color: var(--lime); text-shadow: var(--text-glow-lime); }
 }
 
