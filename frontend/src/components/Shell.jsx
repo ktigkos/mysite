@@ -39,11 +39,6 @@ export default function Shell() {
     <div className={styles.shell}>
       <ParticleField />
 
-      <div className={`${styles.corner} ${styles.tl}`} />
-      <div className={`${styles.corner} ${styles.tr}`} />
-      <div className={`${styles.corner} ${styles.bl}`} />
-      <div className={`${styles.corner} ${styles.br}`} />
-
       <header className={styles.hud}>
         <div className={styles.hudLeft}>
           <span className={styles.sys}>[ SYS ]</span>

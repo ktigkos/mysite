@@ -16,8 +16,13 @@
   --blue-dim:   #246dff;
   --indigo:     #6fffff;
   --indigo-dim: #03beff;
-  --magenta:    #ff00ff;
+  --magenta:    #ff00b3;
   --mag-dim:    #be00d6;
+  --cyan:       #00ffff;
+  --lime:       #ffff00;
+  --orange:     #ff9400;
+  --title:      #01d5fb;
+  --title-lime: #daf203;
   --white:      #ffffff;
   --text:       #9db3ff;
   --muted:      #6d5bb8;
@@ -30,11 +35,15 @@
   --glow-violet:  0 0 10px rgba(172,66,255,.6),  0 0 40px rgba(172,66,255,.25), 0 0 80px rgba(172,66,255,.1);
   --glow-blue:    0 0 10px rgba(57,169,255,.6),   0 0 40px rgba(57,169,255,.25), 0 0 80px rgba(57,169,255,.1);
   --glow-indigo:  0 0 10px rgba(111,255,255,.5),   0 0 40px rgba(111,255,255,.2);
-  --glow-magenta: 0 0 10px rgba(255,0,255,.6),    0 0 40px rgba(255,0,255,.25), 0 0 80px rgba(255,0,255,.1);
+  --glow-magenta: 0 0 10px rgba(255,0,179,.6),    0 0 40px rgba(255,0,179,.25), 0 0 80px rgba(255,0,179,.1);
+  --glow-cyan:    0 0 10px rgba(0,255,255,.55),   0 0 40px rgba(0,255,255,.22), 0 0 80px rgba(0,255,255,.1);
+  --glow-lime:    0 0 10px rgba(255,255,0,.55),   0 0 40px rgba(255,255,0,.22), 0 0 80px rgba(255,255,0,.1);
   --text-glow-violet:  0 0 8px rgba(172,66,255,.9);
   --text-glow-blue:    0 0 8px rgba(57,169,255,.9);
   --text-glow-indigo:  0 0 8px rgba(111,255,255,.8);
-  --text-glow-magenta: 0 0 8px rgba(255,0,255,.9);
+  --text-glow-magenta: 0 0 8px rgba(255,0,179,.9);
+  --text-glow-cyan:    0 0 8px rgba(0,255,255,.85);
+  --text-glow-lime:    0 0 8px rgba(255,255,0,.85);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -166,7 +175,7 @@ body::before {
 .cur-dot {
   position: fixed; top: -4px; left: -4px;
   width: 8px; height: 8px; border-radius: 50%;
-  background: #ff00b3;
+  background: var(--magenta);
   box-shadow: 0 0 8px rgba(255,0,179,.9);
   pointer-events: none; z-index: 99999;
   will-change: transform;
