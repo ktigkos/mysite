@@ -94,6 +94,11 @@ body.no-scanlines::after { display: none; }
   ::-webkit-scrollbar-thumb:hover { background: var(--magenta); }
   /* Firefox */
   * { scrollbar-width: thin; scrollbar-color: var(--violet) var(--bg); }
+
+  /* Home route: hide scrollbar entirely */
+  html.home-route::-webkit-scrollbar,
+  html.home-route *::-webkit-scrollbar { width: 0; height: 0; background: transparent; }
+  html.home-route, html.home-route * { scrollbar-width: none; }
 }
 
 ::selection { background: rgba(172,66,255,.3); color: var(--indigo); }

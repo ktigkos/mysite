@@ -35,6 +35,11 @@ export default function Home() {
   const cardsRef = useRef(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    document.documentElement.classList.add('home-route');
+    return () => document.documentElement.classList.remove('home-route');
+  }, []);
+
   // Tap outside any card un-flips (mirrors desktop mouse-leave behavior on touch)
   useEffect(() => {
     if (flippedIdx === null) return;
