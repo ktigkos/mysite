@@ -57,7 +57,7 @@
   text-decoration: none; letter-spacing: .1em;
   display: flex; align-items: baseline; gap: 1px;
 }
-.logoMy   { color: var(--white); }
+.logoMy   { color: var(--cyan); text-shadow: var(--text-glow-cyan); }
 .logoDot  { color: var(--magenta); text-shadow: var(--text-glow-magenta); }
 .logoSite { color: var(--magenta); text-shadow: var(--text-glow-magenta); }
 
