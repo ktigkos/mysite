@@ -17,12 +17,12 @@ export default function GlitchText({ text, className = '', tag: Tag = 'span' }) 
           display: inline-block;
         }
         .glitch-layer1 {
-          color: var(--magenta);
+          color: var(--title-magenta);
           animation: glitch1 6s steps(1) infinite;
           opacity: .8;
         }
         .glitch-layer2 {
-          color: var(--cyan);
+          color: var(--title-cyan);
           animation: glitch2 6s steps(1) infinite;
           animation-delay: .1s;
           opacity: .7;

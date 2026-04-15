@@ -19,10 +19,12 @@
   --magenta:    #ff00b3;
   --mag-dim:    #be00d6;
   --cyan:       #00ffff;
-  --lime:       #ffff00;
+  --lime:       #d4d400;
   --orange:     #ff9400;
   --title:      #01d5fb;
-  --title-lime: #daf203;
+  --title-lime: #aec002;
+  --title-magenta: #c90f91;
+  --title-cyan: #17dbdb;
   --white:      #ffffff;
   --text:       #9db3ff;
   --muted:      #6d5bb8;
