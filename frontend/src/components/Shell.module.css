@@ -59,7 +59,7 @@
 }
 .logoMy   { color: var(--white); }
 .logoDot  { color: var(--magenta); text-shadow: var(--text-glow-magenta); }
-.logoSite { color: #e2b3ff; text-shadow: 0 0 6px rgba(226,179,255,.7), 0 0 14px rgba(172,66,255,.4); }
+.logoSite { color: var(--magenta); text-shadow: var(--text-glow-magenta); }
 
 .online {
   font-family: var(--mono); font-size: .62rem;
