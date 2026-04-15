@@ -9,6 +9,15 @@
 .title {
   font-family: var(--display); font-size: 2.8rem; font-weight: 900;
   letter-spacing: .04em; color: var(--title); margin-bottom: 8px;
+  position: relative;
+  &::after {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 3px,
+      rgba(0,0,0,.12) 3px, rgba(0,0,0,.12) 4px
+    );
+    pointer-events: none;
+  }
 }
 .accent { color: var(--magenta); text-shadow: var(--text-glow-magenta); }
 .sub { font-family: var(--body); font-size: .78rem; color: var(--muted); letter-spacing: .06em; }
