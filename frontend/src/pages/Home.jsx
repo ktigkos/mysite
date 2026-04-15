@@ -13,6 +13,11 @@ const BOOT_LINES = [
   '> ALL SYSTEMS NOMINAL — JACK IN.',
 ];
 
+// Module-level flag: survives remounts within the same page session,
+// resets on full page reload/refresh. Lets boot run once per tab load
+// rather than every time Home mounts (e.g. via nav).
+let hasBooted = false;
+
 const CARDS = [
   { num:'01', label:'SNAKE',    desc:'Classic 2D arcade. Eat. Grow. Die.',  back:'Launch the classic snake game.',    href:'snake.html',   color:'magenta', icon:'🐍', external: true  },
   { num:'02', label:'SNAKE_3D', desc:'Three dimensions. One serpent.',       back:'Enter the 3D arena.',               href:'snake3d.html', color:'violet',  icon:'🌀', external: true  },
@@ -24,7 +29,7 @@ const CARDS = [
 
 export default function Home() {
   const [lines,    setLines]    = useState([]);
-  const [bootDone, setBootDone] = useState(false);
+  const [bootDone, setBootDone] = useState(hasBooted);
   const [flippedIdx, setFlippedIdx] = useState(null); // which card is flipped (touch devices)
   const heroRef  = useRef(null);
   const cardsRef = useRef(null);
@@ -43,13 +48,17 @@ export default function Home() {
   }, [flippedIdx]);
 
   useEffect(() => {
+    if (hasBooted) return;
     let i = 0;
     const run = () => {
       if (i < BOOT_LINES.length) {
         setLines(prev => [...prev, BOOT_LINES[i++]]);
         setTimeout(run, 220);
       } else {
-        setTimeout(() => setBootDone(true), 350);
+        setTimeout(() => {
+          hasBooted = true;
+          setBootDone(true);
+        }, 350);
       }
     };
     run();
