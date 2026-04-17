@@ -50,6 +50,7 @@ export default function Notepad() {
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
+            data-lenis-prevent
           />
         </div>
 
