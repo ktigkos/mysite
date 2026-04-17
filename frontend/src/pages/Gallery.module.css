@@ -131,6 +131,14 @@
 .dlBtn { background: var(--magenta); color: var(--bg); border-color: var(--magenta); &:hover { box-shadow: var(--glow-magenta); } }
 .previewBtn { background: transparent; color: var(--text); border-color: rgba(255,255,255,.25); &:hover { border-color: var(--cyan); color: var(--cyan); } }
 
+/* Touch devices: hide hover overlay so taps always open the lightbox
+   instead of hitting the overlay's download anchor underneath the finger. */
+@media (hover: none) {
+  .photoOverlay { display: none; }
+  .photoItem:hover img { filter: none; }
+  .photoItem:hover { transform: none; box-shadow: none; border-color: var(--border); }
+}
+
 /* ── Load more ── */
 .loadMoreWrap { text-align: center; margin-top: 32px; }
 .loadMoreBtn {
@@ -152,9 +160,11 @@
 .lightboxInner {
   position: relative; max-width: 90vw; max-height: 90vh;
   display: flex; flex-direction: column; align-items: center; gap: 12px;
+  min-height: 0;
 }
 .lightboxInner img {
   max-width: 100%; max-height: 78vh;
+  width: auto; height: auto; min-height: 0; flex: 0 1 auto;
   border-radius: 3px; border: 1px solid var(--border2);
   object-fit: contain; box-shadow: var(--glow-magenta);
 }
@@ -209,6 +219,30 @@
 
 @media (max-width: 560px) {
   .gallery { padding: 20px 16px 60px; }
-  .lbPrev { left: -10px; } .lbNext { right: -10px; }
   .sortWrap { margin-left: 0; }
+
+  /* Constrain the lightbox inner so controls stay inside the viewport
+     with comfortable tap margins on all sides. Dynamic viewport units
+     keep the image from being pushed under mobile browser chrome.
+     width: fit-content makes the inner shrink-wrap the image so the
+     close button pins to the image's actual top-right corner. */
+  .lightbox { padding: 52px 28px 20px; }
+  .lightboxInner {
+    max-width: calc(100vw - 56px); max-height: calc(100dvh - 72px);
+    width: fit-content;
+  }
+  .lightboxInner img { max-width: 100%; max-height: calc(100dvh - 180px); }
+
+  /* Nav arrows pulled inside the viewport for easy thumb reach. */
+  .lbPrev  { left: -20px; }
+  .lbNext  { right: -20px; }
+
+  /* Close button sits on the image's top-right corner, with a solid
+     backdrop so it stays visible on any image.
+     Tweak --lb-close-offset to move it closer to / further from the corner. */
+  .lbClose {
+    --lb-close-offset: -8px;
+    top: var(--lb-close-offset); right: var(--lb-close-offset);
+    background: rgba(4,1,14,.75);
+  }
 }
