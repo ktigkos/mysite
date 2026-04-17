@@ -94,6 +94,10 @@
   border-radius: 4px;
   background: var(--surface);
   overflow: hidden;
+  /* Firefox needs each face to have its own 3D transform + a tiny Z
+     offset; without this, backface-visibility silently fails and the
+     front bleeds through the back as a mirrored image. */
+  transform: translateZ(1px);
   /* Subtle top-edge glow line */
   &::before {
     content: ''; position: absolute;
@@ -135,7 +139,7 @@
 
 /* ── Back face ───────────────────────────────────────────── */
 .flipBack {
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) translateZ(1px);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   gap: 14px; padding: 24px;
