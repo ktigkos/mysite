@@ -94,6 +94,12 @@
       opacity:0;transition:opacity .25s;
     }
     .photo-item:hover .photo-overlay{opacity:1}
+    /* Mobile / touch-only: suppress overlay so tapping an image goes straight
+       to the lightbox instead of accidentally hitting the Download/Preview
+       buttons (which open Unsplash or trigger a download). */
+    @media (hover:none){
+      .photo-overlay{display:none !important}
+    }
     .photo-author{font-size:.62rem;color:var(--text);letter-spacing:.06em;margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .photo-author a{color:var(--accent);text-decoration:none}
     .photo-author a:hover{text-decoration:underline}
