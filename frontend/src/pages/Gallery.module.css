@@ -241,8 +241,7 @@
      backdrop so it stays visible on any image.
      Tweak --lb-close-offset to move it closer to / further from the corner. */
   .lbClose {
-    --lb-close-offset: -8px;
+    --lb-close-offset: -10px;
     top: var(--lb-close-offset); right: var(--lb-close-offset);
-    background: rgba(4,1,14,.75);
   }
 }
