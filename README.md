@@ -14,16 +14,6 @@ A personal dashboard and portfolio site built with vanilla HTML/CSS/JS and a Nod
 | **Snake** | Classic 2D snake game |
 | **Snake 3D** | 3D snake game |
 
-
-### External APIs
-
-| Service | Used for |
-|---------|----------|
-| [Unsplash](https://unsplash.com/developers) | Photo search in Gallery |
-| [Open-Meteo](https://open-meteo.com/) | Weather forecasts |
-| [Open-Meteo Geocoding](https://open-meteo.com/en/docs/geocoding-api) | Location search |
-| [OpenStreetMap Nominatim](https://nominatim.org/) | Reverse geocoding |
-
 ## Prerequisites
 
 - Node.js (v18+)
@@ -87,18 +77,6 @@ mysite/
 ├── package.json
 └── favicon.png
 ```
-
-## API Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/contacts` | List all contacts (paginated via `?page=&limit=`) |
-| `POST` | `/contacts` | Create a contact |
-| `PUT` | `/contacts/:id` | Update a contact |
-| `DELETE` | `/contacts/:id` | Delete a contact |
-| `GET` | `/note` | Get notepad content |
-| `POST` | `/note` | Save notepad content |
-| `WS` | `/` | WebSocket for real-time notepad sync |
 
 ## TODO
 
