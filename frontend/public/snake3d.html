@@ -563,8 +563,8 @@ function buildDynamic(){
 const proj=m4(),view=m4(),mvp=m4();
 perspective(proj,Math.PI/3.8,1.0,0.1,300.0);
 // Camera pulled back further and raised higher so all 4 walls are clearly visible
-const eyeDist=GRID*1.05;
-const eye=[Math.sin(CAMERA_ANGLE)*eyeDist*0.55, eyeDist*1.05, Math.cos(CAMERA_ANGLE)*eyeDist*0.55];
+const eyeDist=GRID*1.15;
+const eye=[0, eyeDist, 0.001];
 
 function updateMVP(){
   lookAt(view,eye,[0,-0.2,0],[0,1,0]);
