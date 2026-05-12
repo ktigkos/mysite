@@ -385,16 +385,19 @@ function bindMesh(vb,ib){
 // ═══════════════════════════════════════════════
 const GRID=20, CELL=1.0;
 const CAMERA_ANGLE=Math.PI*0.15;
-let snake,dir,nextDir,food,score,best=0,gameOver,paused,started;
+let snake,dir,food,score,best=0,gameOver,paused,started;
+const dirQueue=[];
+const DIR_QUEUE_MAX=2;
+const EARLY_STEP_FRAC=0.5;
 let moveTimer=0,moveInterval=180,level=1,foodPulse=0,time=0;
 
 function initGame(){
   const mid=Math.floor(GRID/2);
   // Snake must be set BEFORE spawnFood so the do-while check works
   snake=[{x:mid,y:mid},{x:mid-1,y:mid},{x:mid-2,y:mid}];
-  dir={x:1,y:0};nextDir={x:1,y:0};
+  dir={x:1,y:0};dirQueue.length=0;
   score=0;gameOver=false;paused=false;
-  moveInterval=180;level=1;foodPulse=0;
+  moveInterval=180;level=1;foodPulse=0;moveTimer=0;
   food=spawnFood(); // called after snake is ready
   document.getElementById('score').textContent='0';
   document.getElementById('level').textContent='1';
@@ -604,8 +607,13 @@ function loop(ts){
   if(gameOver){render(dt);return;}
   if(paused){render(0);return;}
   moveTimer+=dt;
-  if(moveTimer>=moveInterval){moveTimer=0;dir={...nextDir};step();}
+  if(moveTimer>=moveInterval) stepNow();
   render(dt);
+}
+function stepNow(){
+  if(dirQueue.length>0) dir=dirQueue.shift();
+  moveTimer=0;
+  step();
 }
 function step(){
   const head=snake[0],nx=head.x+dir.x,ny=head.y+dir.y;
@@ -632,8 +640,11 @@ function screenToGridDir(sdx,sdy){
 }
 function trySetDir(sdx,sdy){
   const d=screenToGridDir(sdx,sdy);
-  if(d.x===-dir.x&&d.y===-dir.y)return;
-  nextDir=d;
+  const ref=dirQueue.length>0?dirQueue[dirQueue.length-1]:dir;
+  if(d.x===-ref.x&&d.y===-ref.y) return;
+  if(d.x=== ref.x&&d.y=== ref.y) return;
+  if(dirQueue.length<DIR_QUEUE_MAX) dirQueue.push(d);
+  if(started&&!paused&&!gameOver&&moveTimer>=moveInterval*EARLY_STEP_FRAC) stepNow();
 }
 document.addEventListener('keydown',e=>{
   switch(e.key){
