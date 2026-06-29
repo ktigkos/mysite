@@ -6,24 +6,41 @@ const WebSocket = require('ws');
 const PORT = 3000;
 
 const db = mysql.createConnection({
-  host: 'localhost',
-  port: 8889,
+  host: '127.0.0.1',
+  port: 3306,
   user: 'root',
   password: 'root',
   database: 'contacts_db',
+  charset: 'utf8mb4',
 });
 
 db.connect((err) => {
   if (err) console.error('Contacts DB connection failed:', err);
-  else console.log('Connected to contacts_db');
+  else {
+    console.log('Connected to contacts_db');
+    db.execute(`
+      CREATE TABLE IF NOT EXISTS contacts (
+        id INT NOT NULL AUTO_INCREMENT,
+        first_name VARCHAR(50) NOT NULL,
+        last_name VARCHAR(50) NOT NULL,
+        phone VARCHAR(20) NOT NULL,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `, (err) => {
+      if (err) console.error('Failed to create contacts table:', err);
+      else console.log('Contacts table ready');
+    });
+  }
 });
 
 const noteDb = mysql.createConnection({
-  host: 'localhost',
-  port: 8889,
+  host: '127.0.0.1',
+  port: 3306,
   user: 'root',
   password: 'root',
   database: 'notepad',
+  charset: 'utf8mb4',
 });
 
 noteDb.connect((err) => {
@@ -205,4 +222,4 @@ wss.on('connection', (ws) => {
   ws.on('error', (err) => console.error('WebSocket error:', err));
 });
 
-server.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
+server.listen(PORT, '0.0.0.0', () => console.log(`\n🚀  http://localhost:${PORT}\n`));
