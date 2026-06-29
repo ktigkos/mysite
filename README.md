@@ -51,7 +51,7 @@ A personal dashboard and portfolio site built with vanilla HTML/CSS/JS and a Nod
 
    ```js
    host: 'localhost',
-   port: 8889,
+   port: 3000,
    user: 'root',
    password: 'root',
    ```
