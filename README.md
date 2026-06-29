@@ -22,7 +22,7 @@ CREATE DATABASE IF NOT EXISTS contacts_db;
 CREATE DATABASE IF NOT EXISTS notepad;
 ```
 
-If your MySQL credentials differ from `root / root` or port differs from `8889`,
+If your MySQL credentials differ from `root / root` or port differs from `3306`,
 update them at the top of `backend/server.js`.
 
 ---
@@ -95,4 +95,4 @@ Changes to React files hot-reload instantly. No rebuild needed.
 |---------------------|------|
 | Node.js server       | 3000 |
 | Vite dev server      | 4200 |
-| MySQL (MAMP default) | 8889 |
+| MySQL | 3306 |

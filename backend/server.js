@@ -20,7 +20,7 @@ const MIME = {
 
 // ── Contacts DB ──────────────────────────────────────────────────────────────
 const db = mysql.createConnection({
-  host: 'localhost', port: 8889,
+  host: '127.0.0.1', port: 3306,
   user: 'root', password: 'root', database: 'contacts_db',
 });
 db.connect(err => {
@@ -33,13 +33,13 @@ db.connect(err => {
       last_name  VARCHAR(100) NOT NULL,
       phone      VARCHAR(50)  NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )`, err => { if (err) console.error(err); });
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`, err => { if (err) console.error(err); });
   }
 });
 
 // ── Notepad DB ───────────────────────────────────────────────────────────────
 const noteDb = mysql.createConnection({
-  host: 'localhost', port: 8889,
+  host: '127.0.0.1', port: 3306,
   user: 'root', password: 'root', database: 'notepad',
 });
 noteDb.connect(err => {
@@ -167,4 +167,4 @@ wss.on('connection', ws => {
   ws.on('close', () => console.log('WS disconnected'));
 });
 
-server.listen(PORT, () => console.log(`\n🚀  http://localhost:${PORT}\n`));
+server.listen(PORT, '0.0.0.0', () => console.log(`\n🚀  http://localhost:${PORT}\n`));
