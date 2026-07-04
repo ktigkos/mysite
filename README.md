@@ -1,6 +1,20 @@
 # my.site — React + Vite + Node.js
 
-Neo-Tokyo cyberpunk personal site with React 18 frontend and Node.js/WebSocket backend.
+A personal dashboard built with React 18 frontend and Node.js/WebSocket backend. Combines interactive games, real-time utilities and data tools into a single web application
+
+---
+
+## Features
+
+| Page | Description |
+|------|-------------|
+| **Home** | Dashboard with navigation cards to all features |
+| **Contacts** | A simple contact manager backed by MySQL |
+| **Notepad** | Real-time notepad synced across devices via WebSocket |
+| **Weather** | Location-based weather with hourly/daily forecasts |
+| **Gallery** | Unsplash-powered image search with lightbox viewer |
+| **Snake** | Classic 2D snake game |
+| **Snake 3D** | 3D snake game |
 
 ---
 
