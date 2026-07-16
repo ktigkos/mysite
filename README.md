@@ -17,7 +17,7 @@ A personal dashboard and portfolio site built with vanilla HTML/CSS/JS and a Nod
 ## Prerequisites
 
 - Node.js (v18+)
-- MySQL server running on `localhost:8889` (default MAMP port)
+- MySQL server running on `localhost:3306`
 
 ## Setup
 
